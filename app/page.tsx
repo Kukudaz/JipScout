@@ -8,25 +8,25 @@ import HousingInput from '@/components/HousingInput';
 import ResultCard from '@/components/ResultCard';
 
 const defaultUserProfile: UserProfileInput = {
-  myIncome: '5000',
-  spouseIncome: '0',
-  cash: '10000',
-  existingDebtPayment: '0',
-  age: '30',
+  myIncome: '',
+  spouseIncome: '',
+  cash: '',
+  existingDebtPayment: '',
+  age: '',
   jobType: 'employee',
   marriageStatus: 'single',
-  isFirstTimeBuyer: true,
+  isFirstTimeBuyer: false,
   isHomeless: true,
   newbornWithin2Years: false,
-  childrenCount: '0',
+  childrenCount: '',
   wantsGraduatedRepayment: false,
 };
 
 const defaultProperty: PropertyInput = {
-  homePrice: '50000',
-  exclusiveArea: '85',
+  homePrice: '',
+  exclusiveArea: '',
   isCapitalArea: true,
-  isRegulatedArea: true,
+  isRegulatedArea: false,
 };
 
 export default function Home() {
@@ -46,7 +46,7 @@ export default function Home() {
           내 대출 가능액 판정기
         </h1>
         <p className="text-gray-600">
-          소득과 조건으로 정부대출, 일반 대출의 예상 가능 금액을 확인하세요
+          정부대출과 일반 주담대의 예상 한도, 불가 사유, 체증식 가능성을 빠르게 확인하세요
         </p>
       </header>
 

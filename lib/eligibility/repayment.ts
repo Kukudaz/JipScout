@@ -3,7 +3,7 @@ import { GRADUATED_REPAYMENT } from '@/lib/policies/loanRules';
 
 export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
   const result: RepaymentResult = {
-    graduatedRepaymentPossible: false,
+    status: 'difficult',
     reasons: [],
     notes: [],
   };
@@ -13,28 +13,25 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
     return result;
   }
 
-  // Check age requirement
-  if (user.age < GRADUATED_REPAYMENT.minAge) {
-    result.reasons.push(`나이 기준 미달 (최소 ${GRADUATED_REPAYMENT.minAge}세 필요)`);
-    return result;
-  }
-
-  if (user.age > GRADUATED_REPAYMENT.maxAge) {
-    result.reasons.push(`나이 기준 초과 (최대 ${GRADUATED_REPAYMENT.maxAge}세 이하)`);
+  // Check age requirement (under 40)
+  if (user.age >= GRADUATED_REPAYMENT.maxAgeExclusive) {
+    result.status = 'difficult';
+    result.reasons.push('만 40세 미만 조건에 해당하지 않습니다');
     return result;
   }
 
   // Check job type requirement
   if (!(GRADUATED_REPAYMENT.allowedJobTypes as readonly string[]).includes(user.jobType)) {
-    result.reasons.push('체증식은 직장인(정규직)에 한해 가능합니다');
-    result.notes.push('자영업자/프리랜서는 체증식 적용 대상이 아님');
+    result.status = 'conditional';
+    result.reasons.push('현재 입력 기준으로 근로소득자 요건 확인이 필요합니다');
+    result.notes.push('자영업자/프리랜서는 체증식 적용이 제한될 수 있습니다');
     return result;
   }
 
-  result.graduatedRepaymentPossible = true;
-  result.reasons.push('나이 및 직업 조건 충족');
-  result.reasons.push('초기 낮은 상환액으로 시작하여 연차별 증액 가능');
-  result.notes.push('정부대출 상품 중 체증식 적용 가능 상품 확인 필요');
+  result.status = 'possible';
+  result.reasons.push('만 40세 미만 근로소득자 기준에 가까워 체증식 검토 가능성이 있습니다');
+  result.notes.push('디딤돌은 고정금리 선택 시 가능 여부를 함께 확인해야 합니다');
+  result.notes.push('보금자리론은 공사 사전심사 여부 등 추가 조건 확인이 필요합니다');
 
   return result;
 }

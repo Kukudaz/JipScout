@@ -60,7 +60,7 @@ export interface LoanProductResult {
 }
 
 export interface RepaymentResult {
-  graduatedRepaymentPossible: boolean;
+  status: EligibilityStatus;
   reasons: string[];
   notes: string[];
 }

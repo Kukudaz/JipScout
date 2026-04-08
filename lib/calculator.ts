@@ -56,27 +56,17 @@ export function calculateLoanSummary(
   const repayment = assessGraduatedRepayment(user);
 
   // Determine final estimated loan amount
-  // Priority: newbornSpecial > bogeumjari > didimdol > bankMortgage
-  let finalEstimatedLoanAmount = 0;
-  
-  if (newbornSpecial.status === 'possible' && newbornSpecial.amount > 0) {
-    finalEstimatedLoanAmount = newbornSpecial.amount;
-  } else if (bogeumjari.status === 'possible' && bogeumjari.amount > 0) {
-    finalEstimatedLoanAmount = bogeumjari.amount;
-  } else if (didimdol.status === 'possible' && didimdol.amount > 0) {
-    finalEstimatedLoanAmount = didimdol.amount;
-  } else if (bankMortgage.status === 'possible' && bankMortgage.amount > 0) {
-    finalEstimatedLoanAmount = bankMortgage.amount;
-  } else {
-    // If nothing is fully possible, take the max of conditional amounts
-    const conditionalAmounts = [
-      newbornSpecial.status !== 'difficult' ? newbornSpecial.amount : 0,
-      bogeumjari.status !== 'difficult' ? bogeumjari.amount : 0,
-      didimdol.status !== 'difficult' ? didimdol.amount : 0,
-      bankMortgage.amount,
-    ];
-    finalEstimatedLoanAmount = Math.max(...conditionalAmounts);
-  }
+  // Use the maximum amount from products that are not 'difficult'
+  const allProducts: LoanProductResult[] = [
+    newbornSpecial,
+    didimdol,
+    bogeumjari,
+    bankMortgage,
+  ];
+
+  const finalEstimatedLoanAmount = Math.max(
+    ...allProducts.map((item) => item.status !== 'difficult' ? item.amount : 0)
+  );
 
   const totalBuyingPower = user.cash + finalEstimatedLoanAmount;
 

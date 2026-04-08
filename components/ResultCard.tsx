@@ -95,8 +95,8 @@ export default function ResultCard({ result }: Props) {
       <div className="border-t pt-4 mb-4">
         <h3 className="font-semibold text-gray-700 mb-3">체증식 가능 여부</h3>
         <div className="flex items-center gap-3">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${result.repayment.graduatedRepaymentPossible ? 'text-green-600 bg-green-50' : 'text-gray-600 bg-gray-50'}`}>
-            {result.repayment.graduatedRepaymentPossible ? '가능' : '불가'}
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.repayment.status)}`}>
+            {getStatusText(result.repayment.status)}
           </span>
           {result.repayment.reasons.map((reason, i) => (
             <span key={i} className="text-sm text-gray-600">{reason}</span>

@@ -1,77 +1,51 @@
-// Policy Rules - Korean Housing Loan Policies
-// All amounts in 만원 (10,000 KRW)
-
+// 모든 금액 단위: 만원
 export const LOAN_LIMITS = {
   newbornSpecial: {
-    maxLoan: 50000, // 5억
-    maxPrice: 80000, // 8억
-    maxIncome: 12000, // 1.2억 (생애최초), 1.5억 (신혼/신규출산)
-    maxIncomeNewlywed: 15000, // 1.5억
-    ltvRatio: 0.8,
+    maxLoan: 40000, // 4억
+    maxPrice: 90000, // 9억
+    maxIncome: 13000, // 1.3억
+    maxIncomeDual: 20000, // 맞벌이 2억
+    defaultLtv: 0.7,
+    firstTimeLtvCapitalOrRegulated: 0.7,
+    firstTimeLtvNonCapitalNonRegulated: 0.8,
   },
   didimdol: {
-    maxLoan: 25000, // 2.5억
-    maxPrice: 50000, // 5억
-    maxIncome: 7000, // 7천만원
-    ltvRatio: 0.7,
+    defaultMaxLoan: 20000, // 2억
+    firstTimeMaxLoan: 24000, // 2.4억
+    marriedOrMultiChildMaxLoan: 32000, // 3.2억
+    defaultMaxPrice: 50000, // 5억
+    marriedOrMultiChildMaxPrice: 60000, // 6억
+    defaultMaxIncome: 6000, // 6천
+    firstTimeMaxIncome: 7000, // 7천
+    marriedOrMultiChildMaxIncome: 7000, // 7천
+    newlywedMaxIncome: 8500, // 8,500
+    defaultLtv: 0.7,
+    firstTimeLtvCapitalOrRegulated: 0.7,
+    firstTimeLtvNonCapitalNonRegulated: 0.8,
   },
   bogeumjari: {
-    maxLoan: 40000, // 4억
+    defaultMaxLoan: 36000, // 3.6억
+    firstTimeMaxLoan: 42000, // 4.2억
     maxPrice: 60000, // 6억
-    maxIncome: 8000, // 8천만원
-    ltvRatio: 0.7,
+    defaultMaxIncome: 7000, // 7천
+    newlywedMaxIncome: 8500, // 8,500
+    defaultLtv: 0.7,
+    regulatedAreaLtvDeduction: 0.1,
   },
-} as const;
+};
 
-export const LTV_RULES = {
-  regulatedArea: {
-    firstTime: 0.8,
-    general: 0.7,
-  },
-  nonRegulatedArea: {
-    firstTime: 0.8,
-    general: 0.8,
-  },
-} as const;
-
-export const DTI_RATIO = 0.4; // Debt to Income ratio
-export const LOAN_INTEREST_RATE = 0.05; // 5% annual interest
-export const LOAN_TERM_YEARS = 20;
+export const BANK_MORTGAGE_RULES = {
+  monthlyRepaymentRatio: 0.35,
+  annualInterestRate: 0.045,
+  loanTermYears: 30,
+  regulatedAreaLtv: 0.6,
+  nonRegulatedAreaLtv: 0.7,
+};
 
 export const GRADUATED_REPAYMENT = {
-  minAge: 25,
-  maxAge: 45,
+  maxAgeExclusive: 40, // 만 40세 미만
   allowedJobTypes: ['employee'] as const,
-} as const;
-
-// Policy check functions
-export const checkNewbornSpecialEligibility = (
-  newbornWithin2Years: boolean,
-  childrenCount: number
-): boolean => {
-  return newbornWithin2Years || childrenCount > 0;
 };
 
-export const checkDidimdolEligibility = (
-  isHomeless: boolean,
-  isFirstTimeBuyer: boolean
-): boolean => {
-  return isHomeless && isFirstTimeBuyer;
-};
-
-export const checkBogeumjariEligibility = (
-  isHomeless: boolean,
-  isFirstTimeBuyer: boolean
-): boolean => {
-  return isHomeless && isFirstTimeBuyer;
-};
-
-export const getLtvRatio = (
-  isFirstTimeBuyer: boolean,
-  isRegulatedArea: boolean
-): number => {
-  if (isRegulatedArea) {
-    return isFirstTimeBuyer ? LTV_RULES.regulatedArea.firstTime : LTV_RULES.regulatedArea.general;
-  }
-  return isFirstTimeBuyer ? LTV_RULES.nonRegulatedArea.firstTime : LTV_RULES.nonRegulatedArea.general;
-};
+export const isDualIncome = (myIncome: number, spouseIncome: number) => myIncome > 0 && spouseIncome > 0;
+export const isMarriedLike = (marriageStatus: 'single' | 'newlywed' | 'married') => marriageStatus === 'newlywed' || marriageStatus === 'married';
