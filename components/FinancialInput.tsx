@@ -1,14 +1,14 @@
 'use client';
 
-import { FinancialInfo, MarriageStatus, JobType, RegionType } from '@/types';
+import { UserProfileInput, MarriageStatus, JobType } from '@/types';
 
 interface Props {
-  data: FinancialInfo;
-  onChange: (data: FinancialInfo) => void;
+  data: UserProfileInput;
+  onChange: (data: UserProfileInput) => void;
 }
 
 export default function FinancialInput({ data, onChange }: Props) {
-  const update = <K extends keyof FinancialInfo>(key: K, value: FinancialInfo[K]) => {
+  const update = <K extends keyof UserProfileInput>(key: K, value: UserProfileInput[K]) => {
     onChange({ ...data, [key]: value });
   };
 
@@ -21,9 +21,10 @@ export default function FinancialInput({ data, onChange }: Props) {
           <div>
             <label className="block text-sm text-gray-600 mb-1">본인 연소득 (만원)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={data.myIncome}
-              onChange={(e) => update('myIncome', Number(e.target.value))}
+              onChange={(e) => update('myIncome', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="5000"
             />
@@ -31,9 +32,10 @@ export default function FinancialInput({ data, onChange }: Props) {
           <div>
             <label className="block text-sm text-gray-600 mb-1">배우자 연소득 (만원)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={data.spouseIncome}
-              onChange={(e) => update('spouseIncome', Number(e.target.value))}
+              onChange={(e) => update('spouseIncome', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="0"
             />
@@ -44,9 +46,10 @@ export default function FinancialInput({ data, onChange }: Props) {
           <div>
             <label className="block text-sm text-gray-600 mb-1">보유 현금 (만원)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={data.cash}
-              onChange={(e) => update('cash', Number(e.target.value))}
+              onChange={(e) => update('cash', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="10000"
             />
@@ -54,9 +57,10 @@ export default function FinancialInput({ data, onChange }: Props) {
           <div>
             <label className="block text-sm text-gray-600 mb-1">기존 월 부채 상환액 (만원)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={data.existingDebtPayment}
-              onChange={(e) => update('existingDebtPayment', Number(e.target.value))}
+              onChange={(e) => update('existingDebtPayment', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="0"
             />
@@ -67,13 +71,28 @@ export default function FinancialInput({ data, onChange }: Props) {
           <div>
             <label className="block text-sm text-gray-600 mb-1">나이</label>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={data.age}
-              onChange={(e) => update('age', Number(e.target.value))}
+              onChange={(e) => update('age', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="30"
             />
           </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">자녀 수</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={data.childrenCount}
+              onChange={(e) => update('childrenCount', e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-gray-600 mb-1">혼인 상태</label>
             <select
@@ -86,9 +105,6 @@ export default function FinancialInput({ data, onChange }: Props) {
               <option value="married">기혼</option>
             </select>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-gray-600 mb-1">직업 형태</label>
             <select
@@ -99,17 +115,6 @@ export default function FinancialInput({ data, onChange }: Props) {
               <option value="employee">직장인</option>
               <option value="selfEmployed">자영업자</option>
               <option value="freelancer">프리랜서 또는 기타</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">지역 구분</label>
-            <select
-              value={data.regionType}
-              onChange={(e) => update('regionType', e.target.value as RegionType)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="seoulMetro">수도권 또는 규제지역</option>
-              <option value="nonSeoul">비수도권 또는 비규제지역</option>
             </select>
           </div>
         </div>
@@ -136,8 +141,17 @@ export default function FinancialInput({ data, onChange }: Props) {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              checked={data.isSteppingInterest}
-              onChange={(e) => update('isSteppingInterest', e.target.checked)}
+              checked={data.newbornWithin2Years}
+              onChange={(e) => update('newbornWithin2Years', e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">2년 내 출산</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={data.wantsGraduatedRepayment}
+              onChange={(e) => update('wantsGraduatedRepayment', e.target.checked)}
               className="w-4 h-4"
             />
             <span className="text-sm text-gray-700">체증식 관심</span>

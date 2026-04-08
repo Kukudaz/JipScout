@@ -1,39 +1,77 @@
+// Form Input Types (string-based for UX)
 export type MarriageStatus = 'single' | 'newlywed' | 'married';
 export type JobType = 'employee' | 'selfEmployed' | 'freelancer';
-export type RegionType = 'seoulMetro' | 'nonSeoul';
 
-export interface FinancialInfo {
+export interface UserProfileInput {
+  myIncome: string;
+  spouseIncome: string;
+  cash: string;
+  existingDebtPayment: string;
+  age: string;
+  jobType: JobType;
+  marriageStatus: MarriageStatus;
+  isFirstTimeBuyer: boolean;
+  isHomeless: boolean;
+  newbornWithin2Years: boolean;
+  childrenCount: string;
+  wantsGraduatedRepayment: boolean;
+}
+
+export interface PropertyInput {
+  homePrice: string;
+  exclusiveArea: string;
+  isCapitalArea: boolean;
+  isRegulatedArea: boolean;
+}
+
+// Calculation Types (number-based for logic)
+export interface UserProfile {
   myIncome: number;
   spouseIncome: number;
   cash: number;
   existingDebtPayment: number;
+  age: number;
+  jobType: JobType;
+  marriageStatus: MarriageStatus;
   isFirstTimeBuyer: boolean;
   isHomeless: boolean;
-  marriageStatus: MarriageStatus;
-  jobType: JobType;
-  age: number;
-  regionType: RegionType;
-  isSteppingInterest: boolean;
+  newbornWithin2Years: boolean;
+  childrenCount: number;
+  wantsGraduatedRepayment: boolean;
 }
 
-export interface HousingCondition {
-  targetPrice: number;
+export interface Property {
+  homePrice: number;
+  exclusiveArea: number;
+  isCapitalArea: boolean;
+  isRegulatedArea: boolean;
 }
 
-export interface LoanAssessment {
-  eligibility: 'possible' | 'conditional' | 'difficult';
+// Result Types
+export type EligibilityStatus = 'possible' | 'conditional' | 'difficult';
+
+export interface LoanProductResult {
+  productName: string;
+  status: EligibilityStatus;
   amount: number;
-  reason: string;
+  reasons: string[];
+  failReasons: string[];
+  notes: string[];
 }
 
-export interface CalculationResult {
-  totalIncome: number;
-  cash: number;
-  finalEstimatedLoan: number;
-  didimdol: LoanAssessment;
-  bogeumjari: LoanAssessment;
-  regularMortgage: LoanAssessment;
-  steppingEligible: boolean;
-  steppingReason: string;
-  totalPurchasingPower: number;
+export interface RepaymentResult {
+  graduatedRepaymentPossible: boolean;
+  reasons: string[];
+  notes: string[];
+}
+
+export interface FinalLoanSummary {
+  finalEstimatedLoanAmount: number;
+  newbornSpecial: LoanProductResult;
+  didimdol: LoanProductResult;
+  bogeumjari: LoanProductResult;
+  bankMortgage: LoanProductResult;
+  repayment: RepaymentResult;
+  totalBuyingPower: number;
+  userCash: number;
 }

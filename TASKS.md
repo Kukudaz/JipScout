@@ -1,51 +1,105 @@
-# 현재 우선 작업
+# 현재 리빌드 작업
 
-## 1순위
-기존 예산 계산기 구조를 대출 가능액 판정기 구조로 바꾼다.
+## 1. 방향 전환
+기존 "내 집 가능 예산 계산기" 구조를
+"대출 상품 판정기" 구조로 바꾼다.
 
-## 2순위
-입력 항목을 최소화한다.
-삭제 또는 숨김 대상:
-- 평수
-- 방 수
-- 화장실 수
-- 방향
-- 현관 방향
-- 역거리
-- 구조 선호
-- 연식
-- 수리 가능 여부
-- 예비비
-- 이사비
-- 가전/가구비
-- 수리비
-- 결혼비용
+## 2. 입력 폼 축소 및 재구성
+### 제거
+- preferredLocation
+- minArea
+- minRooms
+- minBathrooms
+- preferredDirection
+- entranceDirection
+- maxDistanceToStation
+- preferredStructure
+- maxBuildingAge
+- canRenovate
+- emergencyFund
+- movingCost
+- applianceCost
+- repairCost
+- weddingCost
 
-## 3순위
-추가할 입력:
-- 혼인 상태
-- 직업 형태
-- 나이
-- 지역 구분
-- 체증식 관심 여부
+### 추가
+- age
+- jobType
+- maritalStatus
+- newbornWithin2Years
+- childrenCount
+- homePrice
+- exclusiveArea
+- isCapitalArea
+- isRegulatedArea
+- wantsGraduatedRepayment
 
-## 4순위
-결과 카드 우선순위를 바꾼다.
-새 우선순위:
-1. 예상 최종 대출 가능액
-2. 디딤돌 예상액
-3. 보금자리론 예상액
-4. 일반 주담대 예상액
-5. 체증식 가능 여부
-6. 총 구매 가능 금액
+## 3. 타입 재정의
+types/index.ts를 아래 기준으로 다시 정의한다.
+- UserProfileInput
+- PropertyInput
+- LoanProductResult
+- FinalLoanSummary
 
-## 5순위
-계산 로직을 상품별로 나눈다.
-- 디딤돌 판정 함수
-- 보금자리론 판정 함수
-- 일반 주담대 판정 함수
-- 체증식 판정 함수
-- 최종 통합 결과 함수
+## 4. 정책 룰 분리
+lib/policies/loanRules.ts 생성
+- newbornSpecial rules
+- didimdol rules
+- bogeumjari rules
+- bankMortgage estimate rules
+- repayment rules
 
-## 6순위
-완료 후 typecheck와 build를 확인한다.
+## 5. 상품별 판정 함수 분리
+아래 파일을 만든다.
+- lib/eligibility/newborn.ts
+- lib/eligibility/didimdol.ts
+- lib/eligibility/bogeumjari.ts
+- lib/eligibility/bankMortgage.ts
+- lib/eligibility/repayment.ts
+
+각 함수는 아래를 반환한다.
+- status
+- amount
+- reasons[]
+- failReasons[]
+- notes[]
+
+## 6. 통합 계산 함수 재작성
+lib/calculator.ts를 다시 작성한다.
+출력:
+- finalEstimatedLoanAmount
+- newbornSpecial result
+- didimdol result
+- bogeumjari result
+- bankMortgage result
+- repayment result
+- totalBuyingPower
+
+## 7. 결과 카드 개편
+components/ResultCard.tsx를 아래 구조로 바꾼다.
+- 상단 요약 카드
+- 상품별 상세 카드 4개
+- 체증식 카드
+- 안내 문구
+
+## 8. 숫자 입력 버그 수정
+현재 숫자 입력값이 0으로 고정되어 수정이 불편하다.
+수정 원칙:
+- input type="number"에 숫자 state 직접 바인딩하지 않는다
+- 폼 입력 상태는 string으로 관리한다
+- 값이 비어 있을 때 "" 유지
+- 계산 직전에 parseNumber()로 숫자 변환
+- placeholder만 0 또는 예시값 표시
+- 필요 시 inputMode="numeric" 사용
+
+## 9. 첫 화면 문구 교체
+변경 전:
+- 내 집 가능 예산 계산기
+변경 후:
+- 내 대출 가능액 판정기
+
+## 10. 완료 조건
+- npm run build 통과
+- 숫자 입력시 맨 앞 0 고정 문제 없음
+- 상품별 가능 여부와 예상액이 구분됨
+- 불가 사유가 화면에 표시됨
