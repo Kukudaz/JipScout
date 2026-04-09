@@ -6,7 +6,7 @@ import { calculateLoanSummary } from '@/lib/calculator';
 import FinancialInput from '@/components/FinancialInput';
 import HousingInput from '@/components/HousingInput';
 import ResultCard from '@/components/ResultCard';
-import { parseNumber } from '@/lib/format';
+import { validateNumericFields } from '@/lib/validation';
 
 const defaultUserProfile: UserProfileInput = {
   myIncome: '',
@@ -37,36 +37,16 @@ export default function Home() {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const validateInputs = (): string[] => {
-    const errors: string[] = [];
-
-    const requiredNumericInputs: Array<{ label: string; value: string }> = [
-      { label: '본인 연소득', value: userProfile.myIncome },
-      { label: '배우자 연소득', value: userProfile.spouseIncome },
-      { label: '보유 현금', value: userProfile.cash },
-      { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment },
-      { label: '나이', value: userProfile.age },
-      { label: '자녀 수', value: userProfile.childrenCount },
-      { label: '희망 매매가', value: property.homePrice },
-      { label: '전용면적', value: property.exclusiveArea },
-    ];
-
-    for (const item of requiredNumericInputs) {
-      if (item.value.trim() === '') {
-        errors.push(`${item.label}을(를) 입력해주세요.`);
-        continue;
-      }
-
-      const parsed = parseNumber(item.value);
-      if (parsed < 0) {
-        errors.push(`${item.label}은(는) 0 이상이어야 합니다.`);
-      }
-    }
-
-    if (parseNumber(userProfile.age) > 120) {
-      errors.push('나이는 120세 이하로 입력해주세요.');
-    }
-
-    return errors;
+    return validateNumericFields([
+      { label: '본인 연소득', value: userProfile.myIncome, required: true, min: 0 },
+      { label: '배우자 연소득', value: userProfile.spouseIncome, min: 0 },
+      { label: '보유 현금', value: userProfile.cash, required: true, min: 0 },
+      { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment, min: 0 },
+      { label: '나이', value: userProfile.age, required: true, min: 19, max: 120 },
+      { label: '자녀 수', value: userProfile.childrenCount, min: 0 },
+      { label: '희망 매매가', value: property.homePrice, required: true, min: 1 },
+      { label: '전용면적', value: property.exclusiveArea, required: true, min: 1 },
+    ]);
   };
 
   const handleCalculate = () => {
@@ -107,7 +87,7 @@ export default function Home() {
           <section className="bg-red-50 border border-red-200 rounded-xl p-4">
             <h3 className="text-sm font-semibold text-red-700 mb-2">입력값을 확인해주세요</h3>
             <ul className="list-disc list-inside text-sm text-red-600 space-y-1">
-              {validationErrors.slice(0, 5).map((error, index) => (
+              {validationErrors.map((error, index) => (
                 <li key={index}>{error}</li>
               ))}
             </ul>

@@ -34,10 +34,19 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
-  const coreReasonItems =
-    product.status === 'difficult'
-      ? product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }))
-      : product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+  const coreReasonItems = (() => {
+    if (product.status === 'difficult') {
+      return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
+    }
+
+    if (product.status === 'conditional') {
+      const failItems = product.failReasons.map((reason) => ({ type: 'fail' as const, text: reason }));
+      const passItems = product.reasons.map((reason) => ({ type: 'pass' as const, text: reason }));
+      return [...failItems, ...passItems].slice(0, 3);
+    }
+
+    return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+  })();
 
   return (
     <div className="bg-white border rounded-lg p-4">
