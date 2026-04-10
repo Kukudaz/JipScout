@@ -35,6 +35,7 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+<<<<<<< HEAD
   const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
     '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
     디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
@@ -44,6 +45,8 @@ function ProductCard({ product }: { product: LoanProductResult }) {
 
   const guide = guideByProductName[product.productName];
 
+=======
+>>>>>>> origin/main
   const coreReasonItems = (() => {
     if (product.status === 'difficult') {
       return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
