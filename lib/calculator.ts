@@ -12,6 +12,8 @@ import { assessDidimdol } from '@/lib/eligibility/didimdol';
 import { assessBogeumjari } from '@/lib/eligibility/bogeumjari';
 import { assessBankMortgage } from '@/lib/eligibility/bankMortgage';
 import { assessGraduatedRepayment } from '@/lib/eligibility/repayment';
+import { calculateRepaymentComparison } from '@/lib/repaymentCalculator';
+import { BANK_MORTGAGE_RULES, MARKET_RATE_CONFIG } from '@/lib/policies/loanRules';
 
 // Convert string form inputs to number calculation types
 export function parseUserProfile(input: UserProfileInput): UserProfile {
@@ -61,7 +63,19 @@ export function calculateLoanSummary(
   const bogeumjari = assessBogeumjari(user, property);
   const bankMortgage = assessBankMortgage(user, property);
   const repayment = assessGraduatedRepayment(user);
-  const repaymentComparison = bankMortgage.repaymentComparison ?? null;
+
+  const stressRate = property.isCapitalArea ? 0 : MARKET_RATE_CONFIG.nonCapitalStressRate;
+  const appliedAnnualRate = MARKET_RATE_CONFIG.baseMortgageAnnualRate + stressRate;
+  const repaymentComparison =
+    user.wantsGraduatedRepayment &&
+    repayment.status !== 'difficult' &&
+    bankMortgage.amount > 0
+      ? calculateRepaymentComparison(
+          bankMortgage.amount,
+          appliedAnnualRate,
+          BANK_MORTGAGE_RULES.loanTermYears
+        )
+      : null;
 
   const allProducts: LoanProductResult[] = [newbornSpecial, didimdol, bogeumjari, bankMortgage];
   const finalEstimatedLoanAmount = Math.max(

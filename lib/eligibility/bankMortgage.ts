@@ -1,6 +1,5 @@
 import { UserProfile, Property, LoanProductResult } from '@/types';
 import { BANK_MORTGAGE_RULES, MARKET_RATE_CONFIG } from '@/lib/policies/loanRules';
-import { calculateRepaymentComparison } from '@/lib/repaymentCalculator';
 
 export function assessBankMortgage(
   user: UserProfile,
@@ -13,7 +12,6 @@ export function assessBankMortgage(
     reasons: [],
     failReasons: [],
     notes: [],
-    repaymentComparison: undefined,
   };
 
   const totalIncome = user.myIncome + user.spouseIncome;
@@ -83,18 +81,6 @@ export function assessBankMortgage(
     result.notes.push('자영업자/프리랜서는 실제 소득증빙에 따라 조정될 수 있습니다');
   }
 
-  if (user.wantsGraduatedRepayment) {
-    const comparison = calculateRepaymentComparison(
-      result.amount,
-      appliedAnnualRate,
-      BANK_MORTGAGE_RULES.loanTermYears
-    );
-    result.repaymentComparison = comparison ?? undefined;
-
-    if (comparison) {
-      result.notes.push('체증식 비교는 초기 부담 완화 효과를 보기 위한 참고 계산입니다');
-    }
-  }
 
   return result;
 }

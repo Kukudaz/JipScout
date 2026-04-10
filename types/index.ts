@@ -77,7 +77,6 @@ export interface RepaymentComparison {
 }
 
 export interface LoanProductResult {
-  repaymentComparison?: RepaymentComparison;
   productName: string;
   status: EligibilityStatus;
   amount: number;
