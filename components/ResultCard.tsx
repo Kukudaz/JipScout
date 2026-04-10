@@ -35,7 +35,6 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
-<<<<<<< HEAD
   const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
     '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
     디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
@@ -45,20 +44,28 @@ function ProductCard({ product }: { product: LoanProductResult }) {
 
   const guide = guideByProductName[product.productName];
 
-=======
->>>>>>> origin/main
   const coreReasonItems = (() => {
     if (product.status === 'difficult') {
-      return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
+      return product.failReasons
+        .slice(0, 3)
+        .map((reason) => ({ type: 'fail' as const, text: reason }));
     }
 
     if (product.status === 'conditional') {
-      const failItems = product.failReasons.map((reason) => ({ type: 'fail' as const, text: reason }));
-      const passItems = product.reasons.map((reason) => ({ type: 'pass' as const, text: reason }));
+      const failItems = product.failReasons.map((reason) => ({
+        type: 'fail' as const,
+        text: reason,
+      }));
+      const passItems = product.reasons.map((reason) => ({
+        type: 'pass' as const,
+        text: reason,
+      }));
       return [...failItems, ...passItems].slice(0, 3);
     }
 
-    return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+    return product.reasons
+      .slice(0, 3)
+      .map((reason) => ({ type: 'pass' as const, text: reason }));
   })();
 
   return (
@@ -69,24 +76,30 @@ function ProductCard({ product }: { product: LoanProductResult }) {
           {getStatusText(product.status)}
         </span>
       </div>
+
       <p className="text-2xl font-bold text-gray-900 mb-2">
         {product.amount > 0 ? formatCurrency(product.amount) : '-'}
       </p>
-      
+
       {coreReasonItems.length > 0 && (
         <div className="mb-2">
           {coreReasonItems.map((item, i) => (
-            <p key={i} className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+            <p
+              key={i}
+              className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}
+            >
               {item.type === 'fail' ? '✗' : '✓'} {item.text}
             </p>
           ))}
         </div>
       )}
-      
+
       {product.notes.length > 0 && (
         <div>
           {product.notes.map((note, i) => (
-            <p key={i} className="text-xs text-gray-500">• {note}</p>
+            <p key={i} className="text-xs text-gray-500">
+              • {note}
+            </p>
           ))}
         </div>
       )}
@@ -98,7 +111,9 @@ function ProductCard({ product }: { product: LoanProductResult }) {
           <p className="text-xs text-gray-600">• {guide.rate}</p>
           <p className="text-xs text-gray-600">• {guide.maxLimit}</p>
           {guide.keyConditions.slice(0, 2).map((condition, index) => (
-            <p key={index} className="text-xs text-gray-600">• 핵심 조건: {condition}</p>
+            <p key={index} className="text-xs text-gray-600">
+              • 핵심 조건: {condition}
+            </p>
           ))}
         </div>
       )}
@@ -132,13 +147,17 @@ export default function ResultCard({ result }: Props) {
             {getStatusText(result.repayment.status)}
           </span>
           {result.repayment.reasons.map((reason, i) => (
-            <span key={i} className="text-sm text-gray-600">{reason}</span>
+            <span key={i} className="text-sm text-gray-600">
+              {reason}
+            </span>
           ))}
         </div>
         {result.repayment.notes.length > 0 && (
           <div className="mt-2">
             {result.repayment.notes.map((note, i) => (
-              <p key={i} className="text-xs text-gray-500">• {note}</p>
+              <p key={i} className="text-xs text-gray-500">
+                • {note}
+              </p>
             ))}
           </div>
         )}
