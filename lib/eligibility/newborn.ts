@@ -60,6 +60,7 @@ export function assessNewbornSpecial(user: UserProfile, property: Property): Loa
     if (usingRefinanceException) {
       result.notes.push('생애최초 사용 이력으로 신생아 특례 재대출 예외 규칙을 우선 적용했습니다');
       result.notes.push('재대출 예외 기준: KB시세 6억원 이하, 최대 5억원, LTV 70% 고정');
+      result.notes.push('재대출 예외에서는 생애최초 우대 LTV 80%를 적용하지 않습니다');
     }
 
     return result;

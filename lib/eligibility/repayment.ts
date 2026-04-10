@@ -26,7 +26,7 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
 
     if (spouseEmployee) {
       result.status = 'conditional';
-      result.reasons.push('본인 기준 체증식은 제한될 수 있으나 배우자 근로소득 기준으로 검토 가능합니다');
+      result.reasons.push('본인 기준 체증식은 제한될 수 있으나 배우자 근로소득 기준(배우자 명의/주채무자)으로 검토 가능합니다');
       result.notes.push('실제 진행 시 배우자 명의/주채무자 여부 확인이 필요합니다');
       return result;
     }
