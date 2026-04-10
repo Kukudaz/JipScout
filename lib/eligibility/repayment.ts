@@ -13,14 +13,12 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
     return result;
   }
 
-  // Check age requirement (under 40)
   if (user.age >= GRADUATED_REPAYMENT.maxAgeExclusive) {
     result.status = 'difficult';
     result.reasons.push('만 40세 미만 조건에 해당하지 않습니다');
     return result;
   }
 
-  // Check job type requirement
   if (!(GRADUATED_REPAYMENT.allowedJobTypes as readonly string[]).includes(user.jobType)) {
     const spouseEmployee =
       isMarriedLike(user.marriageStatus) &&
@@ -28,21 +26,35 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
 
     if (spouseEmployee) {
       result.status = 'conditional';
+<<<<<<< HEAD
+      result.reasons.push('본인 기준 체증식은 제한될 수 있으나 배우자 근로소득 기준(배우자 명의/주채무자)으로 검토 가능합니다');
+=======
       result.reasons.push('본인 기준 체증식은 제한될 수 있으나 배우자 근로소득 기준으로 검토 가능합니다');
+>>>>>>> origin/main
       result.notes.push('실제 진행 시 배우자 명의/주채무자 여부 확인이 필요합니다');
       return result;
     }
 
+<<<<<<< HEAD
+    result.status = 'difficult';
+    if (user.jobType === 'selfEmployed') {
+      result.reasons.push('자영업자는 체증식 적용이 어렵습니다');
+    } else {
+      result.reasons.push('직장인(근로소득) 기준이 아니면 체증식 적용이 제한될 수 있습니다');
+    }
+    result.notes.push('체증식은 미래 소득 증가를 전제로 해 직장인 중심으로 운영되는 경우가 많습니다');
+=======
     result.status = 'conditional';
     result.reasons.push('현재 입력 기준으로 근로소득자 요건 확인이 필요합니다');
     result.notes.push('자영업자/프리랜서는 체증식 적용이 제한될 수 있습니다');
+>>>>>>> origin/main
     return result;
   }
 
   result.status = 'possible';
-  result.reasons.push('만 40세 미만 근로소득자 기준에 가까워 체증식 검토 가능성이 있습니다');
-  result.notes.push('디딤돌은 고정금리 선택 시 가능 여부를 함께 확인해야 합니다');
-  result.notes.push('보금자리론은 공사 사전심사 여부 등 추가 조건 확인이 필요합니다');
+  result.reasons.push('본인 직업과 나이 조건 기준으로 체증식 검토 가능성이 있습니다');
+  result.notes.push('직장인은 미래 소득 증가를 전제로 체증식 검토가 가능합니다');
+  result.notes.push('실제 상품별(디딤돌/보금자리론) 세부 요건은 금융기관 확인이 필요합니다');
 
   return result;
 }

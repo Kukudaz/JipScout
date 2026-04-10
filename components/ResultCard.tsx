@@ -8,6 +8,16 @@ interface Props {
   result: FinalLoanSummary | null;
 }
 
+const GUIDE_BY_PRODUCT_NAME: Record<
+  string,
+  (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]
+> = {
+  '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
+  디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
+  보금자리론: LOAN_PRODUCT_GUIDES.bogeumjari,
+  '일반 주담대': LOAN_PRODUCT_GUIDES.bankMortgage,
+};
+
 function getStatusColor(status: EligibilityStatus): string {
   switch (status) {
     case 'possible':
@@ -35,6 +45,22 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+<<<<<<< HEAD
+  const guide = GUIDE_BY_PRODUCT_NAME[product.productName];
+
+  const coreReasonItems = (() => {
+    if (product.status === 'difficult') {
+      return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
+    }
+
+    if (product.status === 'conditional') {
+      const failItems = product.failReasons.map((reason) => ({ type: 'fail' as const, text: reason }));
+      const passItems = product.reasons.map((reason) => ({ type: 'pass' as const, text: reason }));
+      return [...failItems, ...passItems].slice(0, 3);
+    }
+
+    return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+=======
   const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
     '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
     디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
@@ -66,6 +92,7 @@ function ProductCard({ product }: { product: LoanProductResult }) {
     return product.reasons
       .slice(0, 3)
       .map((reason) => ({ type: 'pass' as const, text: reason }));
+>>>>>>> origin/main
   })();
 
   return (
@@ -84,10 +111,14 @@ function ProductCard({ product }: { product: LoanProductResult }) {
       {coreReasonItems.length > 0 && (
         <div className="mb-2">
           {coreReasonItems.map((item, i) => (
+<<<<<<< HEAD
+            <p key={i} className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+=======
             <p
               key={i}
               className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}
             >
+>>>>>>> origin/main
               {item.type === 'fail' ? '✗' : '✓'} {item.text}
             </p>
           ))}
@@ -96,7 +127,11 @@ function ProductCard({ product }: { product: LoanProductResult }) {
 
       {product.notes.length > 0 && (
         <div>
+<<<<<<< HEAD
+          {product.notes.slice(0, 3).map((note, i) => (
+=======
           {product.notes.map((note, i) => (
+>>>>>>> origin/main
             <p key={i} className="text-xs text-gray-500">
               • {note}
             </p>
@@ -146,7 +181,11 @@ export default function ResultCard({ result }: Props) {
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.repayment.status)}`}>
             {getStatusText(result.repayment.status)}
           </span>
+<<<<<<< HEAD
+          {result.repayment.reasons.slice(0, 2).map((reason, i) => (
+=======
           {result.repayment.reasons.map((reason, i) => (
+>>>>>>> origin/main
             <span key={i} className="text-sm text-gray-600">
               {reason}
             </span>
@@ -154,11 +193,27 @@ export default function ResultCard({ result }: Props) {
         </div>
         {result.repayment.notes.length > 0 && (
           <div className="mt-2">
+<<<<<<< HEAD
+            {result.repayment.notes.slice(0, 2).map((note, i) => (
+=======
             {result.repayment.notes.map((note, i) => (
+>>>>>>> origin/main
               <p key={i} className="text-xs text-gray-500">
                 • {note}
               </p>
             ))}
+          </div>
+        )}
+
+        {result.repaymentComparison && (
+          <div className="mt-3 p-3 rounded bg-yellow-50 border border-yellow-100">
+            <p className="text-xs font-medium text-yellow-800 mb-1">체증식 월 상환 비교(참고)</p>
+            <p className="text-xs text-gray-700">• 원리금균등 월 상환액: {formatCurrency(result.repaymentComparison.equalMonthlyPayment)}</p>
+            <p className="text-xs text-gray-700">• 체증식 초기 월 상환액: {formatCurrency(result.repaymentComparison.graduatedInitialMonthlyPayment)}</p>
+            <p className="text-xs text-gray-700">• {result.repaymentComparison.projectionYears}년 후 예상 월 상환액: {formatCurrency(result.repaymentComparison.graduatedEstimatedLaterPayment)}</p>
+            <p className="text-xs text-gray-700">• 초반 부담 감소액: {formatCurrency(result.repaymentComparison.savingsAtStart)}</p>
+            <p className="text-xs text-gray-500 mt-1">{result.repaymentComparison.assumptionNote}</p>
+            <p className="text-xs text-gray-500">체증식을 적용하면 초반 월 부담이 줄 수 있지만, 시간이 지날수록 상환액은 증가할 수 있습니다.</p>
           </div>
         )}
       </div>

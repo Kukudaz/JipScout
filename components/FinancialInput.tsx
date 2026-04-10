@@ -26,7 +26,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.myIncome}
               onChange={(e) => update('myIncome', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="5000"
+              placeholder="예: 5000"
             />
           </div>
           <div>
@@ -37,7 +37,32 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.spouseIncome}
               onChange={(e) => update('spouseIncome', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="0"
+              placeholder="예: 3000"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">NICE 점수 (선택)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={data.niceScore}
+              onChange={(e) => update('niceScore', e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="예: 820"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">KCB 점수 (선택)</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={data.kcbScore}
+              onChange={(e) => update('kcbScore', e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="예: 760"
             />
           </div>
         </div>
@@ -51,7 +76,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.cash}
               onChange={(e) => update('cash', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="10000"
+              placeholder="예: 10000"
             />
           </div>
           <div>
@@ -62,7 +87,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.existingDebtPayment}
               onChange={(e) => update('existingDebtPayment', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="0"
+              placeholder="예: 120"
             />
           </div>
         </div>
@@ -76,7 +101,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.age}
               onChange={(e) => update('age', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="30"
+              placeholder="예: 33"
             />
           </div>
           <div>
@@ -87,7 +112,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               value={data.childrenCount}
               onChange={(e) => update('childrenCount', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="0"
+              placeholder="예: 1"
             />
           </div>
         </div>
@@ -173,6 +198,49 @@ export default function FinancialInput({ data, onChange }: Props) {
             />
             <span className="text-sm text-gray-700">체증식 관심</span>
           </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={data.hasExistingFirstHomeLoan}
+              onChange={(e) => update('hasExistingFirstHomeLoan', e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">기존 생애최초 신혼부부 대출 보유</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={data.hasUsedFirstTimeLoanBefore}
+              onChange={(e) => update('hasUsedFirstTimeLoanBefore', e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">과거 생애최초 대출 사용 이력</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={data.wantsNewbornRefinance}
+              onChange={(e) => update('wantsNewbornRefinance', e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">신생아 특례로 갈아타기 희망</span>
+          </label>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">기존 생애최초 신혼부부 대출 잔액 (만원)</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={data.existingFirstHomeLoanBalance}
+            onChange={(e) => update('existingFirstHomeLoanBalance', e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
+            placeholder="예: 18000"
+            disabled={!data.hasExistingFirstHomeLoan}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            갈아타기 시에는 기존 대출 잔액을 제외한 범위에서만 추가 대출 가능액을 추정합니다.
+          </p>
         </div>
       </div>
     </section>

@@ -16,10 +16,17 @@ export interface UserProfileInput {
   newbornWithin2Years: boolean;
   childrenCount: string;
   wantsGraduatedRepayment: boolean;
+  hasExistingFirstHomeLoan: boolean;
+  hasUsedFirstTimeLoanBefore: boolean;
+  existingFirstHomeLoanBalance: string;
+  wantsNewbornRefinance: boolean;
+  niceScore: string;
+  kcbScore: string;
 }
 
 export interface PropertyInput {
   homePrice: string;
+  kbPrice: string;
   exclusiveArea: string;
   isCapitalArea: boolean;
   isRegulatedArea: boolean;
@@ -40,10 +47,17 @@ export interface UserProfile {
   newbornWithin2Years: boolean;
   childrenCount: number;
   wantsGraduatedRepayment: boolean;
+  hasExistingFirstHomeLoan: boolean;
+  hasUsedFirstTimeLoanBefore: boolean;
+  existingFirstHomeLoanBalance: number;
+  wantsNewbornRefinance: boolean;
+  niceScore: number;
+  kcbScore: number;
 }
 
 export interface Property {
   homePrice: number;
+  kbPrice: number;
   exclusiveArea: number;
   isCapitalArea: boolean;
   isRegulatedArea: boolean;
@@ -51,6 +65,16 @@ export interface Property {
 
 // Result Types
 export type EligibilityStatus = 'possible' | 'conditional' | 'difficult';
+
+
+export interface RepaymentComparison {
+  equalMonthlyPayment: number;
+  graduatedInitialMonthlyPayment: number;
+  graduatedEstimatedLaterPayment: number;
+  savingsAtStart: number;
+  projectionYears: number;
+  assumptionNote: string;
+}
 
 export interface LoanProductResult {
   productName: string;
@@ -74,6 +98,7 @@ export interface FinalLoanSummary {
   bogeumjari: LoanProductResult;
   bankMortgage: LoanProductResult;
   repayment: RepaymentResult;
+  repaymentComparison: RepaymentComparison | null;
   totalBuyingPower: number;
   userCash: number;
 }
