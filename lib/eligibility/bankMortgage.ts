@@ -55,6 +55,7 @@ export function assessBankMortgage(
   result.amount = Math.floor(eligibleAmount);
   result.reasons.push(`LTV ${Math.floor(ltvRatio * 100)}% 기준 적용`);
   result.reasons.push(`월 상환 여력 기준 보수적으로 계산`);
+  result.notes.push(`현재 계산 기준(가정 금리): 연 ${(BANK_MORTGAGE_RULES.annualInterestRate * 100).toFixed(1)}%`);
 
   if (property.isRegulatedArea) {
     result.notes.push('규제지역은 실제 심사 시 더 보수적으로 적용될 수 있습니다');

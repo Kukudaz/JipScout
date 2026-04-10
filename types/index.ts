@@ -9,6 +9,7 @@ export interface UserProfileInput {
   existingDebtPayment: string;
   age: string;
   jobType: JobType;
+  spouseJobType: JobType;
   marriageStatus: MarriageStatus;
   isFirstTimeBuyer: boolean;
   isHomeless: boolean;
@@ -32,6 +33,7 @@ export interface UserProfile {
   existingDebtPayment: number;
   age: number;
   jobType: JobType;
+  spouseJobType: JobType;
   marriageStatus: MarriageStatus;
   isFirstTimeBuyer: boolean;
   isHomeless: boolean;

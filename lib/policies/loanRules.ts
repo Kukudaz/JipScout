@@ -34,6 +34,33 @@ export const LOAN_LIMITS = {
   },
 };
 
+export const LOAN_PRODUCT_GUIDES = {
+  newbornSpecial: {
+    ltv: '기본 LTV 70%, 비수도권·비규제 생애최초는 80% 가능',
+    rate: '금리 안내: 정책상품 특성상 연 1~4%대 범위에서 심사 조건별 변동',
+    maxLimit: '최대 한도: 4억원',
+    keyConditions: ['2년 내 출산', '무주택 세대', '주택가격 9억원 이하·전용 85㎡ 이하'],
+  },
+  didimdol: {
+    ltv: '기본 LTV 70%, 비수도권·비규제 생애최초는 80% 가능',
+    rate: '금리 안내: 통상 연 2~4%대, 소득/만기/우대조건에 따라 변동',
+    maxLimit: '최대 한도: 일반 2억, 생애최초 2.4억, 신혼·다자녀 3.2억',
+    keyConditions: ['무주택', '소득 기준 충족', '생애최초·신혼·다자녀 우대 반영'],
+  },
+  bogeumjari: {
+    ltv: '기본 LTV 70%, 규제지역 비생애최초는 차감(60% 가능)',
+    rate: '금리 안내: 통상 연 3~5%대, 상품 유형·우대금리에 따라 변동',
+    maxLimit: '최대 한도: 일반 3.6억, 생애최초 4.2억',
+    keyConditions: ['주택가격 6억원 이하', '소득 기준 충족', '만기 40/50년 가능성은 나이·혼인상태 영향'],
+  },
+  bankMortgage: {
+    ltv: '규제지역 60%, 비규제지역 70% 기준으로 보수 계산',
+    rate: '현재 계산 기준(가정 금리): 연 4.5%',
+    maxLimit: '최대 한도: LTV·상환여력·현금부족분 중 가장 보수적인 값 적용',
+    keyConditions: ['소득 대비 월 상환여력 반영', '기존 부채 상환액 반영', '실제 심사 시 금리/한도 변동 가능'],
+  },
+} as const;
+
 export const BANK_MORTGAGE_RULES = {
   monthlyRepaymentRatio: 0.35,
   annualInterestRate: 0.045,

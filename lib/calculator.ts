@@ -22,6 +22,7 @@ export function parseUserProfile(input: UserProfileInput): UserProfile {
     existingDebtPayment: parseNumber(input.existingDebtPayment),
     age: parseNumber(input.age),
     jobType: input.jobType,
+    spouseJobType: input.spouseJobType,
     marriageStatus: input.marriageStatus,
     isFirstTimeBuyer: input.isFirstTimeBuyer,
     isHomeless: input.isHomeless,

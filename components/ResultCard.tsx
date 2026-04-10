@@ -2,6 +2,7 @@
 
 import { FinalLoanSummary, LoanProductResult, EligibilityStatus } from '@/types';
 import { formatCurrency } from '@/lib/format';
+import { LOAN_PRODUCT_GUIDES } from '@/lib/policies/loanRules';
 
 interface Props {
   result: FinalLoanSummary | null;
@@ -34,6 +35,29 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+  const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
+    '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
+    디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
+    보금자리론: LOAN_PRODUCT_GUIDES.bogeumjari,
+    '일반 주담대': LOAN_PRODUCT_GUIDES.bankMortgage,
+  };
+
+  const guide = guideByProductName[product.productName];
+
+  const coreReasonItems = (() => {
+    if (product.status === 'difficult') {
+      return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
+    }
+
+    if (product.status === 'conditional') {
+      const failItems = product.failReasons.map((reason) => ({ type: 'fail' as const, text: reason }));
+      const passItems = product.reasons.map((reason) => ({ type: 'pass' as const, text: reason }));
+      return [...failItems, ...passItems].slice(0, 3);
+    }
+
+    return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+  })();
+
   return (
     <div className="bg-white border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
@@ -46,18 +70,12 @@ function ProductCard({ product }: { product: LoanProductResult }) {
         {product.amount > 0 ? formatCurrency(product.amount) : '-'}
       </p>
       
-      {product.reasons.length > 0 && (
+      {coreReasonItems.length > 0 && (
         <div className="mb-2">
-          {product.reasons.map((reason, i) => (
-            <p key={i} className="text-xs text-green-600">✓ {reason}</p>
-          ))}
-        </div>
-      )}
-      
-      {product.failReasons.length > 0 && (
-        <div className="mb-2">
-          {product.failReasons.map((reason, i) => (
-            <p key={i} className="text-xs text-red-500">✗ {reason}</p>
+          {coreReasonItems.map((item, i) => (
+            <p key={i} className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+              {item.type === 'fail' ? '✗' : '✓'} {item.text}
+            </p>
           ))}
         </div>
       )}
@@ -66,6 +84,18 @@ function ProductCard({ product }: { product: LoanProductResult }) {
         <div>
           {product.notes.map((note, i) => (
             <p key={i} className="text-xs text-gray-500">• {note}</p>
+          ))}
+        </div>
+      )}
+
+      {guide && (
+        <div className="mt-3 p-3 rounded bg-gray-50 border border-gray-100 space-y-1">
+          <p className="text-xs font-medium text-gray-700">현재 계산 기준 안내</p>
+          <p className="text-xs text-gray-600">• {guide.ltv}</p>
+          <p className="text-xs text-gray-600">• {guide.rate}</p>
+          <p className="text-xs text-gray-600">• {guide.maxLimit}</p>
+          {guide.keyConditions.slice(0, 2).map((condition, index) => (
+            <p key={index} className="text-xs text-gray-600">• 핵심 조건: {condition}</p>
           ))}
         </div>
       )}
@@ -129,6 +159,7 @@ export default function ResultCard({ result }: Props) {
         <p>• 본 결과는 입력값 기준 예상치입니다.</p>
         <p>• 실제 대출 가능 여부와 금리는 금융기관 심사 및 최신 규제에 따라 달라질 수 있습니다.</p>
         <p>• 정책대출 자격은 실제 신청 시점의 기준으로 다시 확인이 필요합니다.</p>
+        <p>• 자영업자/프리랜서는 소득 입증 방식에 따라 실제 가능 금액이 달라질 수 있습니다.</p>
       </div>
     </section>
   );
