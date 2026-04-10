@@ -1,10 +1,10 @@
-import { 
-  UserProfile, 
-  Property, 
-  FinalLoanSummary, 
+import {
+  UserProfile,
+  Property,
+  FinalLoanSummary,
   LoanProductResult,
   UserProfileInput,
-  PropertyInput
+  PropertyInput,
 } from '@/types';
 import { parseNumber } from '@/lib/format';
 import { assessNewbornSpecial } from '@/lib/eligibility/newborn';
@@ -22,18 +22,26 @@ export function parseUserProfile(input: UserProfileInput): UserProfile {
     existingDebtPayment: parseNumber(input.existingDebtPayment),
     age: parseNumber(input.age),
     jobType: input.jobType,
+    spouseJobType: input.spouseJobType,
     marriageStatus: input.marriageStatus,
     isFirstTimeBuyer: input.isFirstTimeBuyer,
     isHomeless: input.isHomeless,
     newbornWithin2Years: input.newbornWithin2Years,
     childrenCount: parseNumber(input.childrenCount),
     wantsGraduatedRepayment: input.wantsGraduatedRepayment,
+    hasExistingFirstHomeLoan: input.hasExistingFirstHomeLoan,
+    hasUsedFirstTimeLoanBefore: input.hasUsedFirstTimeLoanBefore,
+    existingFirstHomeLoanBalance: parseNumber(input.existingFirstHomeLoanBalance),
+    wantsNewbornRefinance: input.wantsNewbornRefinance,
+    niceScore: parseNumber(input.niceScore),
+    kcbScore: parseNumber(input.kcbScore),
   };
 }
 
 export function parseProperty(input: PropertyInput): Property {
   return {
     homePrice: parseNumber(input.homePrice),
+    kbPrice: parseNumber(input.kbPrice),
     exclusiveArea: parseNumber(input.exclusiveArea),
     isCapitalArea: input.isCapitalArea,
     isRegulatedArea: input.isRegulatedArea,
@@ -48,24 +56,16 @@ export function calculateLoanSummary(
   const user = parseUserProfile(userProfileInput);
   const property = parseProperty(propertyInput);
 
-  // Assess each loan product
   const newbornSpecial = assessNewbornSpecial(user, property);
   const didimdol = assessDidimdol(user, property);
   const bogeumjari = assessBogeumjari(user, property);
   const bankMortgage = assessBankMortgage(user, property);
   const repayment = assessGraduatedRepayment(user);
+  const repaymentComparison = bankMortgage.repaymentComparison ?? null;
 
-  // Determine final estimated loan amount
-  // Use the maximum amount from products that are not 'difficult'
-  const allProducts: LoanProductResult[] = [
-    newbornSpecial,
-    didimdol,
-    bogeumjari,
-    bankMortgage,
-  ];
-
+  const allProducts: LoanProductResult[] = [newbornSpecial, didimdol, bogeumjari, bankMortgage];
   const finalEstimatedLoanAmount = Math.max(
-    ...allProducts.map((item) => item.status !== 'difficult' ? item.amount : 0)
+    ...allProducts.map((item) => (item.status !== 'difficult' ? item.amount : 0))
   );
 
   const totalBuyingPower = user.cash + finalEstimatedLoanAmount;
@@ -77,6 +77,7 @@ export function calculateLoanSummary(
     bogeumjari,
     bankMortgage,
     repayment,
+    repaymentComparison,
     totalBuyingPower,
     userCash: user.cash,
   };

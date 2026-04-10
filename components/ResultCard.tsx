@@ -2,10 +2,21 @@
 
 import { FinalLoanSummary, LoanProductResult, EligibilityStatus } from '@/types';
 import { formatCurrency } from '@/lib/format';
+import { LOAN_PRODUCT_GUIDES } from '@/lib/policies/loanRules';
 
 interface Props {
   result: FinalLoanSummary | null;
 }
+
+const GUIDE_BY_PRODUCT_NAME: Record<
+  string,
+  (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]
+> = {
+  '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
+  디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
+  보금자리론: LOAN_PRODUCT_GUIDES.bogeumjari,
+  '일반 주담대': LOAN_PRODUCT_GUIDES.bankMortgage,
+};
 
 function getStatusColor(status: EligibilityStatus): string {
   switch (status) {
@@ -34,6 +45,22 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+  const guide = GUIDE_BY_PRODUCT_NAME[product.productName];
+
+  const coreReasonItems = (() => {
+    if (product.status === 'difficult') {
+      return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
+    }
+
+    if (product.status === 'conditional') {
+      const failItems = product.failReasons.map((reason) => ({ type: 'fail' as const, text: reason }));
+      const passItems = product.reasons.map((reason) => ({ type: 'pass' as const, text: reason }));
+      return [...failItems, ...passItems].slice(0, 3);
+    }
+
+    return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+  })();
+
   return (
     <div className="bg-white border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
@@ -45,27 +72,37 @@ function ProductCard({ product }: { product: LoanProductResult }) {
       <p className="text-2xl font-bold text-gray-900 mb-2">
         {product.amount > 0 ? formatCurrency(product.amount) : '-'}
       </p>
-      
-      {product.reasons.length > 0 && (
+
+      {coreReasonItems.length > 0 && (
         <div className="mb-2">
-          {product.reasons.map((reason, i) => (
-            <p key={i} className="text-xs text-green-600">✓ {reason}</p>
+          {coreReasonItems.map((item, i) => (
+            <p key={i} className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+              {item.type === 'fail' ? '✗' : '✓'} {item.text}
+            </p>
           ))}
         </div>
       )}
-      
-      {product.failReasons.length > 0 && (
-        <div className="mb-2">
-          {product.failReasons.map((reason, i) => (
-            <p key={i} className="text-xs text-red-500">✗ {reason}</p>
-          ))}
-        </div>
-      )}
-      
+
       {product.notes.length > 0 && (
         <div>
-          {product.notes.map((note, i) => (
-            <p key={i} className="text-xs text-gray-500">• {note}</p>
+          {product.notes.slice(0, 3).map((note, i) => (
+            <p key={i} className="text-xs text-gray-500">
+              • {note}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {guide && (
+        <div className="mt-3 p-3 rounded bg-gray-50 border border-gray-100 space-y-1">
+          <p className="text-xs font-medium text-gray-700">현재 계산 기준 안내</p>
+          <p className="text-xs text-gray-600">• {guide.ltv}</p>
+          <p className="text-xs text-gray-600">• {guide.rate}</p>
+          <p className="text-xs text-gray-600">• {guide.maxLimit}</p>
+          {guide.keyConditions.slice(0, 2).map((condition, index) => (
+            <p key={index} className="text-xs text-gray-600">
+              • 핵심 조건: {condition}
+            </p>
           ))}
         </div>
       )}
@@ -98,15 +135,31 @@ export default function ResultCard({ result }: Props) {
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.repayment.status)}`}>
             {getStatusText(result.repayment.status)}
           </span>
-          {result.repayment.reasons.map((reason, i) => (
-            <span key={i} className="text-sm text-gray-600">{reason}</span>
+          {result.repayment.reasons.slice(0, 2).map((reason, i) => (
+            <span key={i} className="text-sm text-gray-600">
+              {reason}
+            </span>
           ))}
         </div>
         {result.repayment.notes.length > 0 && (
           <div className="mt-2">
-            {result.repayment.notes.map((note, i) => (
-              <p key={i} className="text-xs text-gray-500">• {note}</p>
+            {result.repayment.notes.slice(0, 2).map((note, i) => (
+              <p key={i} className="text-xs text-gray-500">
+                • {note}
+              </p>
             ))}
+          </div>
+        )}
+
+        {result.repaymentComparison && (
+          <div className="mt-3 p-3 rounded bg-yellow-50 border border-yellow-100">
+            <p className="text-xs font-medium text-yellow-800 mb-1">체증식 월 상환 비교(참고)</p>
+            <p className="text-xs text-gray-700">• 원리금균등 월 상환액: {formatCurrency(result.repaymentComparison.equalMonthlyPayment)}</p>
+            <p className="text-xs text-gray-700">• 체증식 초기 월 상환액: {formatCurrency(result.repaymentComparison.graduatedInitialMonthlyPayment)}</p>
+            <p className="text-xs text-gray-700">• {result.repaymentComparison.projectionYears}년 후 예상 월 상환액: {formatCurrency(result.repaymentComparison.graduatedEstimatedLaterPayment)}</p>
+            <p className="text-xs text-gray-700">• 초반 부담 감소액: {formatCurrency(result.repaymentComparison.savingsAtStart)}</p>
+            <p className="text-xs text-gray-500 mt-1">{result.repaymentComparison.assumptionNote}</p>
+            <p className="text-xs text-gray-500">체증식을 적용하면 초반 월 부담이 줄 수 있지만, 시간이 지날수록 상환액은 증가할 수 있습니다.</p>
           </div>
         )}
       </div>
@@ -129,6 +182,7 @@ export default function ResultCard({ result }: Props) {
         <p>• 본 결과는 입력값 기준 예상치입니다.</p>
         <p>• 실제 대출 가능 여부와 금리는 금융기관 심사 및 최신 규제에 따라 달라질 수 있습니다.</p>
         <p>• 정책대출 자격은 실제 신청 시점의 기준으로 다시 확인이 필요합니다.</p>
+        <p>• 자영업자/프리랜서는 소득 입증 방식에 따라 실제 가능 금액이 달라질 수 있습니다.</p>
       </div>
     </section>
   );

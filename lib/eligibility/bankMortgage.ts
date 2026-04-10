@@ -1,5 +1,6 @@
 import { UserProfile, Property, LoanProductResult } from '@/types';
-import { BANK_MORTGAGE_RULES } from '@/lib/policies/loanRules';
+import { BANK_MORTGAGE_RULES, MARKET_RATE_CONFIG } from '@/lib/policies/loanRules';
+import { calculateRepaymentComparison } from '@/lib/repaymentCalculator';
 
 export function assessBankMortgage(
   user: UserProfile,
@@ -12,6 +13,7 @@ export function assessBankMortgage(
     reasons: [],
     failReasons: [],
     notes: [],
+    repaymentComparison: undefined,
   };
 
   const totalIncome = user.myIncome + user.spouseIncome;
@@ -19,7 +21,9 @@ export function assessBankMortgage(
   const maxMonthlyPayment =
     monthlyIncome * BANK_MORTGAGE_RULES.monthlyRepaymentRatio - user.existingDebtPayment;
 
-  const monthlyRate = BANK_MORTGAGE_RULES.annualInterestRate / 12;
+  const stressRate = property.isCapitalArea ? 0 : MARKET_RATE_CONFIG.nonCapitalStressRate;
+  const appliedAnnualRate = MARKET_RATE_CONFIG.baseMortgageAnnualRate + stressRate;
+  const monthlyRate = appliedAnnualRate / 12;
   const numPayments = BANK_MORTGAGE_RULES.loanTermYears * 12;
 
   let maxLoanByIncome = 0;
@@ -54,14 +58,42 @@ export function assessBankMortgage(
   result.status = 'conditional';
   result.amount = Math.floor(eligibleAmount);
   result.reasons.push(`LTV ${Math.floor(ltvRatio * 100)}% 기준 적용`);
-  result.reasons.push(`월 상환 여력 기준 보수적으로 계산`);
+  result.reasons.push('월 상환 여력 기준 보수적으로 계산');
+  result.notes.push(`현재 계산 기준 금리: 연 ${(appliedAnnualRate * 100).toFixed(2)}% (${MARKET_RATE_CONFIG.source})`);
+  result.notes.push(`기준 금리 업데이트일: ${MARKET_RATE_CONFIG.updatedAt}`);
+
+  if (!property.isCapitalArea) {
+    result.notes.push('현재 계산 시 지방 추가 스트레스 금리 0.75%p를 반영했습니다');
+  }
 
   if (property.isRegulatedArea) {
     result.notes.push('규제지역은 실제 심사 시 더 보수적으로 적용될 수 있습니다');
   }
 
+  if (user.niceScore > 0 || user.kcbScore > 0) {
+    const lowCredit = (user.niceScore > 0 && user.niceScore <= 744) || (user.kcbScore > 0 && user.kcbScore <= 700);
+    if (lowCredit) {
+      result.notes.push('신용점수가 낮으면 한도 이전에 대출 자체가 거절될 수 있습니다');
+      result.notes.push('NICE 744점 / KCB 700점 이하는 최소 기준 미달 가능성이 있습니다');
+      result.notes.push('은행별 세부 기준은 다를 수 있습니다');
+    }
+  }
+
   if (user.jobType === 'selfEmployed' || user.jobType === 'freelancer') {
     result.notes.push('자영업자/프리랜서는 실제 소득증빙에 따라 조정될 수 있습니다');
+  }
+
+  if (user.wantsGraduatedRepayment) {
+    const comparison = calculateRepaymentComparison(
+      result.amount,
+      appliedAnnualRate,
+      BANK_MORTGAGE_RULES.loanTermYears
+    );
+    result.repaymentComparison = comparison ?? undefined;
+
+    if (comparison) {
+      result.notes.push('체증식 비교는 초기 부담 완화 효과를 보기 위한 참고 계산입니다');
+    }
   }
 
   return result;

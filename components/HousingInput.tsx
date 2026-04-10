@@ -26,20 +26,33 @@ export default function HousingInput({ data, onChange }: Props) {
               value={data.homePrice}
               onChange={(e) => update('homePrice', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="50000"
+              placeholder="예: 50000"
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600 mb-1">전용면적 (㎡)</label>
+            <label className="block text-sm text-gray-600 mb-1">KB시세 (만원, 선택)</label>
             <input
               type="text"
               inputMode="numeric"
-              value={data.exclusiveArea}
-              onChange={(e) => update('exclusiveArea', e.target.value)}
+              value={data.kbPrice}
+              onChange={(e) => update('kbPrice', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="85"
+              placeholder="예: 48000"
             />
+            <p className="mt-1 text-xs text-gray-500">신생아 특례 재대출 예외 규칙은 KB시세 기준으로 판단합니다.</p>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">전용면적 (㎡)</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={data.exclusiveArea}
+            onChange={(e) => update('exclusiveArea', e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="예: 84"
+          />
         </div>
 
         <div className="flex flex-wrap gap-6 mt-4">
