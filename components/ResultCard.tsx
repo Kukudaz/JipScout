@@ -45,6 +45,7 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+<<<<<<< HEAD
   const guide = GUIDE_BY_PRODUCT_NAME[product.productName];
 
   const coreReasonItems = (() => {
@@ -59,6 +60,39 @@ function ProductCard({ product }: { product: LoanProductResult }) {
     }
 
     return product.reasons.slice(0, 3).map((reason) => ({ type: 'pass' as const, text: reason }));
+=======
+  const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
+    '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
+    디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
+    보금자리론: LOAN_PRODUCT_GUIDES.bogeumjari,
+    '일반 주담대': LOAN_PRODUCT_GUIDES.bankMortgage,
+  };
+
+  const guide = guideByProductName[product.productName];
+
+  const coreReasonItems = (() => {
+    if (product.status === 'difficult') {
+      return product.failReasons
+        .slice(0, 3)
+        .map((reason) => ({ type: 'fail' as const, text: reason }));
+    }
+
+    if (product.status === 'conditional') {
+      const failItems = product.failReasons.map((reason) => ({
+        type: 'fail' as const,
+        text: reason,
+      }));
+      const passItems = product.reasons.map((reason) => ({
+        type: 'pass' as const,
+        text: reason,
+      }));
+      return [...failItems, ...passItems].slice(0, 3);
+    }
+
+    return product.reasons
+      .slice(0, 3)
+      .map((reason) => ({ type: 'pass' as const, text: reason }));
+>>>>>>> origin/main
   })();
 
   return (
@@ -69,6 +103,7 @@ function ProductCard({ product }: { product: LoanProductResult }) {
           {getStatusText(product.status)}
         </span>
       </div>
+
       <p className="text-2xl font-bold text-gray-900 mb-2">
         {product.amount > 0 ? formatCurrency(product.amount) : '-'}
       </p>
@@ -76,7 +111,14 @@ function ProductCard({ product }: { product: LoanProductResult }) {
       {coreReasonItems.length > 0 && (
         <div className="mb-2">
           {coreReasonItems.map((item, i) => (
+<<<<<<< HEAD
             <p key={i} className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}>
+=======
+            <p
+              key={i}
+              className={`text-xs ${item.type === 'fail' ? 'text-red-500' : 'text-green-600'}`}
+            >
+>>>>>>> origin/main
               {item.type === 'fail' ? '✗' : '✓'} {item.text}
             </p>
           ))}
@@ -85,7 +127,11 @@ function ProductCard({ product }: { product: LoanProductResult }) {
 
       {product.notes.length > 0 && (
         <div>
+<<<<<<< HEAD
           {product.notes.slice(0, 3).map((note, i) => (
+=======
+          {product.notes.map((note, i) => (
+>>>>>>> origin/main
             <p key={i} className="text-xs text-gray-500">
               • {note}
             </p>
@@ -135,7 +181,11 @@ export default function ResultCard({ result }: Props) {
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.repayment.status)}`}>
             {getStatusText(result.repayment.status)}
           </span>
+<<<<<<< HEAD
           {result.repayment.reasons.slice(0, 2).map((reason, i) => (
+=======
+          {result.repayment.reasons.map((reason, i) => (
+>>>>>>> origin/main
             <span key={i} className="text-sm text-gray-600">
               {reason}
             </span>
@@ -143,7 +193,11 @@ export default function ResultCard({ result }: Props) {
         </div>
         {result.repayment.notes.length > 0 && (
           <div className="mt-2">
+<<<<<<< HEAD
             {result.repayment.notes.slice(0, 2).map((note, i) => (
+=======
+            {result.repayment.notes.map((note, i) => (
+>>>>>>> origin/main
               <p key={i} className="text-xs text-gray-500">
                 • {note}
               </p>

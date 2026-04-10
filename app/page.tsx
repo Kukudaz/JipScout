@@ -45,13 +45,18 @@ export default function Home() {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const validateInputs = (): string[] => {
+<<<<<<< HEAD
     const errors = validateNumericFields([
+=======
+    return validateNumericFields([
+>>>>>>> origin/main
       { label: '본인 연소득', value: userProfile.myIncome, required: true, min: 0 },
       { label: '배우자 연소득', value: userProfile.spouseIncome, min: 0 },
       { label: '보유 현금', value: userProfile.cash, required: true, min: 0 },
       { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment, min: 0 },
       { label: '나이', value: userProfile.age, required: true, min: 19, max: 120 },
       { label: '자녀 수', value: userProfile.childrenCount, min: 0 },
+<<<<<<< HEAD
       { label: '기존 생애최초 신혼부부 대출 잔액', value: userProfile.existingFirstHomeLoanBalance, min: 0 },
       { label: 'NICE 점수', value: userProfile.niceScore, min: 0, max: 1000 },
       { label: 'KCB 점수', value: userProfile.kcbScore, min: 0, max: 1000 },
@@ -73,6 +78,11 @@ export default function Home() {
     }
 
     return errors;
+=======
+      { label: '희망 매매가', value: property.homePrice, required: true, min: 1 },
+      { label: '전용면적', value: property.exclusiveArea, required: true, min: 1 },
+    ]);
+>>>>>>> origin/main
   };
 
   const handleCalculate = () => {
