@@ -1,5 +1,5 @@
 import { UserProfile, RepaymentResult } from '@/types';
-import { GRADUATED_REPAYMENT } from '@/lib/policies/loanRules';
+import { GRADUATED_REPAYMENT, isMarriedLike } from '@/lib/policies/loanRules';
 
 export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
   const result: RepaymentResult = {
@@ -22,6 +22,17 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
 
   // Check job type requirement
   if (!(GRADUATED_REPAYMENT.allowedJobTypes as readonly string[]).includes(user.jobType)) {
+    const spouseEmployee =
+      isMarriedLike(user.marriageStatus) &&
+      (GRADUATED_REPAYMENT.allowedJobTypes as readonly string[]).includes(user.spouseJobType);
+
+    if (spouseEmployee) {
+      result.status = 'conditional';
+      result.reasons.push('본인 기준 체증식은 제한될 수 있으나 배우자 근로소득 기준으로 검토 가능합니다');
+      result.notes.push('실제 진행 시 배우자 명의/주채무자 여부 확인이 필요합니다');
+      return result;
+    }
+
     result.status = 'conditional';
     result.reasons.push('현재 입력 기준으로 근로소득자 요건 확인이 필요합니다');
     result.notes.push('자영업자/프리랜서는 체증식 적용이 제한될 수 있습니다');

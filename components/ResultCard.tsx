@@ -2,6 +2,7 @@
 
 import { FinalLoanSummary, LoanProductResult, EligibilityStatus } from '@/types';
 import { formatCurrency } from '@/lib/format';
+import { LOAN_PRODUCT_GUIDES } from '@/lib/policies/loanRules';
 
 interface Props {
   result: FinalLoanSummary | null;
@@ -34,6 +35,18 @@ function getStatusText(status: EligibilityStatus): string {
 }
 
 function ProductCard({ product }: { product: LoanProductResult }) {
+<<<<<<< HEAD
+  const guideByProductName: Record<string, (typeof LOAN_PRODUCT_GUIDES)[keyof typeof LOAN_PRODUCT_GUIDES]> = {
+    '신생아 특례 디딤돌': LOAN_PRODUCT_GUIDES.newbornSpecial,
+    디딤돌: LOAN_PRODUCT_GUIDES.didimdol,
+    보금자리론: LOAN_PRODUCT_GUIDES.bogeumjari,
+    '일반 주담대': LOAN_PRODUCT_GUIDES.bankMortgage,
+  };
+
+  const guide = guideByProductName[product.productName];
+
+=======
+>>>>>>> origin/main
   const coreReasonItems = (() => {
     if (product.status === 'difficult') {
       return product.failReasons.slice(0, 3).map((reason) => ({ type: 'fail' as const, text: reason }));
@@ -74,6 +87,18 @@ function ProductCard({ product }: { product: LoanProductResult }) {
         <div>
           {product.notes.map((note, i) => (
             <p key={i} className="text-xs text-gray-500">• {note}</p>
+          ))}
+        </div>
+      )}
+
+      {guide && (
+        <div className="mt-3 p-3 rounded bg-gray-50 border border-gray-100 space-y-1">
+          <p className="text-xs font-medium text-gray-700">현재 계산 기준 안내</p>
+          <p className="text-xs text-gray-600">• {guide.ltv}</p>
+          <p className="text-xs text-gray-600">• {guide.rate}</p>
+          <p className="text-xs text-gray-600">• {guide.maxLimit}</p>
+          {guide.keyConditions.slice(0, 2).map((condition, index) => (
+            <p key={index} className="text-xs text-gray-600">• 핵심 조건: {condition}</p>
           ))}
         </div>
       )}
