@@ -6,6 +6,7 @@ import { calculateLoanSummary } from '@/lib/calculator';
 import FinancialInput from '@/components/FinancialInput';
 import HousingInput from '@/components/HousingInput';
 import ResultCard from '@/components/ResultCard';
+import { validateNumericFields } from '@/lib/validation';
 
 const defaultUserProfile: UserProfileInput = {
   myIncome: '',
@@ -33,8 +34,29 @@ export default function Home() {
   const [userProfile, setUserProfile] = useState<UserProfileInput>(defaultUserProfile);
   const [property, setProperty] = useState<PropertyInput>(defaultProperty);
   const [result, setResult] = useState<FinalLoanSummary | null>(null);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  const validateInputs = (): string[] => {
+    return validateNumericFields([
+      { label: '본인 연소득', value: userProfile.myIncome, required: true, min: 0 },
+      { label: '배우자 연소득', value: userProfile.spouseIncome, min: 0 },
+      { label: '보유 현금', value: userProfile.cash, required: true, min: 0 },
+      { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment, min: 0 },
+      { label: '나이', value: userProfile.age, required: true, min: 19, max: 120 },
+      { label: '자녀 수', value: userProfile.childrenCount, min: 0 },
+      { label: '희망 매매가', value: property.homePrice, required: true, min: 1 },
+      { label: '전용면적', value: property.exclusiveArea, required: true, min: 1 },
+    ]);
+  };
 
   const handleCalculate = () => {
+    const errors = validateInputs();
+    setValidationErrors(errors);
+    if (errors.length > 0) {
+      setResult(null);
+      return;
+    }
+
     const calculated = calculateLoanSummary(userProfile, property);
     setResult(calculated);
   };
@@ -60,6 +82,17 @@ export default function Home() {
         >
           대출 가능액 판정하기
         </button>
+
+        {validationErrors.length > 0 && (
+          <section className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-red-700 mb-2">입력값을 확인해주세요</h3>
+            <ul className="list-disc list-inside text-sm text-red-600 space-y-1">
+              {validationErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {result && <ResultCard result={result} />}
       </div>
