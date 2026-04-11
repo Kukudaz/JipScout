@@ -56,7 +56,6 @@ export function assessBankMortgage(
   result.status = 'conditional';
   result.amount = Math.floor(eligibleAmount);
   result.reasons.push(`LTV ${Math.floor(ltvRatio * 100)}% 기준 적용`);
-<<<<<<< HEAD
   result.reasons.push('월 상환 여력 기준 보수적으로 계산');
   result.notes.push(`현재 계산 기준 금리: 연 ${(appliedAnnualRate * 100).toFixed(2)}% (${MARKET_RATE_CONFIG.source})`);
   result.notes.push(`기준 금리 업데이트일: ${MARKET_RATE_CONFIG.updatedAt}`);
@@ -64,10 +63,6 @@ export function assessBankMortgage(
   if (!property.isCapitalArea) {
     result.notes.push('현재 계산 시 지방 추가 스트레스 금리 0.75%p를 반영했습니다');
   }
-=======
-  result.reasons.push(`월 상환 여력 기준 보수적으로 계산`);
-  result.notes.push(`현재 계산 기준(가정 금리): 연 ${(BANK_MORTGAGE_RULES.annualInterestRate * 100).toFixed(1)}%`);
->>>>>>> origin/main
 
   if (property.isRegulatedArea) {
     result.notes.push('규제지역은 실제 심사 시 더 보수적으로 적용될 수 있습니다');

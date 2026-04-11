@@ -36,7 +36,6 @@ export function assessNewbornSpecial(user: UserProfile, property: Property): Loa
     result.failReasons.push(`소득 기준 초과 (${incomeLimit.toLocaleString()}만원 이하 필요)`);
   }
 
-<<<<<<< HEAD
   const kbPriceForRule = property.kbPrice > 0 ? property.kbPrice : property.homePrice;
   const usingRefinanceException = user.hasUsedFirstTimeLoanBefore;
 
@@ -63,20 +62,6 @@ export function assessNewbornSpecial(user: UserProfile, property: Property): Loa
       result.notes.push('재대출 예외 기준: KB시세 6억원 이하, 최대 5억원, LTV 70% 고정');
       result.notes.push('재대출 예외에서는 생애최초 우대 LTV 80%를 적용하지 않습니다');
     }
-
-=======
-  const eligibilitySnapshot = [
-    `2년 내 출산: ${user.newbornWithin2Years ? '충족' : '미충족'}`,
-    `무주택: ${user.isHomeless ? '충족' : '미충족'}`,
-    `소득: 합산 ${totalIncome.toLocaleString()}만원 / 기준 ${incomeLimit.toLocaleString()}만원 ${dualIncome ? '(맞벌이 완화 기준)' : ''}`,
-    `주택: 가격 ${property.homePrice.toLocaleString()}만원, 면적 ${property.exclusiveArea.toLocaleString()}㎡`,
-  ];
-
-  // If any fail reasons exist, return early
-  if (result.failReasons.length > 0) {
-    result.notes.push('신생아 특례는 아래 핵심 요건을 함께 확인해야 합니다');
-    result.notes.push(...eligibilitySnapshot.slice(0, 3));
->>>>>>> origin/main
     return result;
   }
 
@@ -101,21 +86,12 @@ export function assessNewbornSpecial(user: UserProfile, property: Property): Loa
   result.amount = Math.floor(eligibleAmount);
   result.reasons.push('출산가구 우대 혜택 적용 가능');
   result.reasons.push('무주택·주택가격·면적 기준 충족');
-<<<<<<< HEAD
   result.reasons.push(`소득 기준 충족 (${incomeRuleText})`);
 
   if (dualIncome) {
     result.notes.push(`맞벌이(부부합산) 기준 ${incomeLimit.toLocaleString()}만원(연 2억원)으로 판정했습니다`);
   } else {
     result.notes.push(`단독소득 기준 ${incomeLimit.toLocaleString()}만원(연 1.3억원)으로 판정했습니다`);
-=======
-
-  if (dualIncome) {
-    result.reasons.push('맞벌이 가구 소득 기준 확대 적용');
-    result.notes.push(`맞벌이 소득 기준(${incomeLimit.toLocaleString()}만원)으로 판정했습니다`);
-  } else {
-    result.notes.push(`단일소득 기준(${incomeLimit.toLocaleString()}만원)으로 판정했습니다`);
->>>>>>> origin/main
   }
 
   if (!usingRefinanceException && (property.isRegulatedArea || property.isCapitalArea)) {

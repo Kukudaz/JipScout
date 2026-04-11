@@ -66,7 +66,6 @@ export interface Property {
 // Result Types
 export type EligibilityStatus = 'possible' | 'conditional' | 'difficult';
 
-
 export interface RepaymentComparison {
   equalMonthlyPayment: number;
   graduatedInitialMonthlyPayment: number;
