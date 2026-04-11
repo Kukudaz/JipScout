@@ -14,6 +14,7 @@ const defaultUserProfile: UserProfileInput = {
   cash: '',
   existingDebtPayment: '',
   age: '',
+  isBirthdayPassed: false,
   jobType: 'employee',
   spouseJobType: 'employee',
   marriageStatus: 'single',

@@ -19,7 +19,7 @@ export function assessBankMortgage(
   const maxMonthlyPayment =
     monthlyIncome * BANK_MORTGAGE_RULES.monthlyRepaymentRatio - user.existingDebtPayment;
 
-  const stressRate = property.isCapitalArea ? 0 : MARKET_RATE_CONFIG.nonCapitalStressRate;
+  const stressRate = property.isCapitalArea ? MARKET_RATE_CONFIG.capitalStressRate : MARKET_RATE_CONFIG.nonCapitalStressRate;
   const appliedAnnualRate = MARKET_RATE_CONFIG.baseMortgageAnnualRate + stressRate;
   const monthlyRate = appliedAnnualRate / 12;
   const numPayments = BANK_MORTGAGE_RULES.loanTermYears * 12;
@@ -60,8 +60,10 @@ export function assessBankMortgage(
   result.notes.push(`현재 계산 기준 금리: 연 ${(appliedAnnualRate * 100).toFixed(2)}% (${MARKET_RATE_CONFIG.source})`);
   result.notes.push(`기준 금리 업데이트일: ${MARKET_RATE_CONFIG.updatedAt}`);
 
-  if (!property.isCapitalArea) {
-    result.notes.push('현재 계산 시 지방 추가 스트레스 금리 0.75%p를 반영했습니다');
+  if (property.isCapitalArea) {
+    result.notes.push(`수도권 스트레스 DSR 3단계 가산 금리(${(MARKET_RATE_CONFIG.capitalStressRate * 100).toFixed(2)}%p)를 반영했습니다`);
+  } else {
+    result.notes.push(`비수도권 추가 스트레스 금리(${(MARKET_RATE_CONFIG.nonCapitalStressRate * 100).toFixed(2)}%p)를 반영했습니다`);
   }
 
   if (property.isRegulatedArea) {

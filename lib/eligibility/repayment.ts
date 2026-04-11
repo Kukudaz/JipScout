@@ -13,7 +13,8 @@ export function assessGraduatedRepayment(user: UserProfile): RepaymentResult {
     return result;
   }
 
-  if (user.age >= GRADUATED_REPAYMENT.maxAgeExclusive) {
+  const fullAge = user.isBirthdayPassed ? user.age : Math.max(0, user.age - 1);
+  if (fullAge >= GRADUATED_REPAYMENT.maxAgeExclusive) {
     result.status = 'difficult';
     result.reasons.push('만 40세 미만 조건에 해당하지 않습니다');
     return result;

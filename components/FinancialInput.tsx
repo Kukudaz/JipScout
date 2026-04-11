@@ -94,15 +94,24 @@ export default function FinancialInput({ data, onChange }: Props) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">나이</label>
+            <label className="block text-sm text-gray-600 mb-1">연 나이 (현재 연도 - 출생 연도)</label>
             <input
               type="text"
               inputMode="numeric"
               value={data.age}
               onChange={(e) => update('age', e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
               placeholder="예: 33"
             />
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={data.isBirthdayPassed}
+                onChange={(e) => update('isBirthdayPassed', e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span className="text-xs text-gray-700">올해 생일이 지났습니다 (만 나이 계산용)</span>
+            </label>
           </div>
           <div>
             <label className="block text-sm text-gray-600 mb-1">자녀 수</label>

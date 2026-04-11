@@ -1,7 +1,7 @@
 // 모든 금액 단위: 만원
 export const LOAN_LIMITS = {
   newbornSpecial: {
-    maxLoan: 40000, // 4억
+    maxLoan: 50000, // 5억
     maxPrice: 90000, // 9억
     maxIncome: 13000, // 1.3억
     maxIncomeDual: 20000, // 맞벌이 2억
@@ -43,7 +43,7 @@ export const LOAN_PRODUCT_GUIDES = {
   newbornSpecial: {
     ltv: '기본 LTV 70%, 비수도권·비규제 생애최초는 80% 가능 (재대출 예외 시 70% 고정)',
     rate: '금리 안내: 정책상품 특성상 연 1~4%대 범위에서 심사 조건별 변동',
-    maxLimit: '최대 한도: 일반 4억원 / 재대출 예외 5억원',
+    maxLimit: '최대 한도: 최대 5억원',
     keyConditions: [
       '2년 내 출산, 무주택, 전용면적 85㎡ 이하',
       '소득 기준: 단독 1.3억 이하 / 맞벌이(부부합산) 2억 이하',
@@ -92,7 +92,8 @@ export const GRADUATED_REPAYMENT = {
 export const MARKET_RATE_CONFIG = {
   baseMortgageAnnualRate: 0.045,
   nonCapitalStressRate: 0.0075,
-  updatedAt: '2026-04-10',
+  capitalStressRate: 0.015,
+  updatedAt: '2026-04-12',
   source: '관리자 설정값(정책 파일)',
 } as const;
 

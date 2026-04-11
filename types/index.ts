@@ -8,6 +8,7 @@ export interface UserProfileInput {
   cash: string;
   existingDebtPayment: string;
   age: string;
+  isBirthdayPassed: boolean;
   jobType: JobType;
   spouseJobType: JobType;
   marriageStatus: MarriageStatus;
@@ -39,6 +40,7 @@ export interface UserProfile {
   cash: number;
   existingDebtPayment: number;
   age: number;
+  isBirthdayPassed: boolean;
   jobType: JobType;
   spouseJobType: JobType;
   marriageStatus: MarriageStatus;
