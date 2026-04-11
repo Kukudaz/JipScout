@@ -1,6 +1,7 @@
 'use client';
 
 import { UserProfileInput, MarriageStatus, JobType } from '@/types';
+import { parseNumber, formatCurrencyKorean } from '@/lib/format';
 
 interface Props {
   data: UserProfileInput;
@@ -10,6 +11,16 @@ interface Props {
 export default function FinancialInput({ data, onChange }: Props) {
   const update = <K extends keyof UserProfileInput>(key: K, value: UserProfileInput[K]) => {
     onChange({ ...data, [key]: value });
+  };
+
+  const renderMoney = (val: string) => {
+    const num = parseNumber(val);
+    return num > 0 ? formatCurrencyKorean(num) : '';
+  };
+
+  const renderNumber = (val: string, suffix: string) => {
+    const num = parseNumber(val);
+    return num > 0 ? `${num}${suffix}` : '';
   };
 
   return (
@@ -28,6 +39,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 5000"
             />
+            {renderMoney(data.myIncome) && <p className="mt-1 text-xs text-blue-600 font-bold">{renderMoney(data.myIncome)}</p>}
           </div>
           <div>
             <label className="block text-sm text-gray-600 mb-1">배우자 연소득 (만원)</label>
@@ -39,6 +51,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 3000"
             />
+            {renderMoney(data.spouseIncome) && <p className="mt-1 text-xs text-blue-600 font-bold">{renderMoney(data.spouseIncome)}</p>}
           </div>
         </div>
 
@@ -53,6 +66,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 820"
             />
+            {renderNumber(data.niceScore, '점') && <p className="mt-1 text-xs text-blue-600 font-bold">{renderNumber(data.niceScore, '점')}</p>}
           </div>
           <div>
             <label className="block text-sm text-gray-600 mb-1">KCB 점수 (선택)</label>
@@ -64,6 +78,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 760"
             />
+            {renderNumber(data.kcbScore, '점') && <p className="mt-1 text-xs text-blue-600 font-bold">{renderNumber(data.kcbScore, '점')}</p>}
           </div>
         </div>
 
@@ -78,6 +93,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 10000"
             />
+            {renderMoney(data.cash) && <p className="mt-1 text-xs text-blue-600 font-bold">{renderMoney(data.cash)}</p>}
           </div>
           <div>
             <label className="block text-sm text-gray-600 mb-1">기존 월 부채 상환액 (만원)</label>
@@ -89,6 +105,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 120"
             />
+            {renderMoney(data.existingDebtPayment) && <p className="mt-1 text-xs text-blue-600 font-bold">{renderMoney(data.existingDebtPayment)}</p>}
           </div>
         </div>
 
@@ -103,6 +120,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
               placeholder="예: 33"
             />
+            {renderNumber(data.age, '세') && <p className="mt-1 text-xs text-blue-600 font-bold mb-2">{renderNumber(data.age, '세')}</p>}
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -123,6 +141,7 @@ export default function FinancialInput({ data, onChange }: Props) {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="예: 1"
             />
+            {renderNumber(data.childrenCount, '명') && <p className="mt-1 text-xs text-blue-600 font-bold">{renderNumber(data.childrenCount, '명')}</p>}
           </div>
         </div>
 
@@ -247,6 +266,7 @@ export default function FinancialInput({ data, onChange }: Props) {
             placeholder="예: 18000"
             disabled={!data.hasExistingFirstHomeLoan}
           />
+          {renderMoney(data.existingFirstHomeLoanBalance) && <p className="mt-1 text-xs text-blue-600 font-bold">{renderMoney(data.existingFirstHomeLoanBalance)}</p>}
           <p className="mt-1 text-xs text-gray-500">
             갈아타기 시에는 기존 대출 잔액을 제외한 범위에서만 추가 대출 가능액을 추정합니다.
           </p>

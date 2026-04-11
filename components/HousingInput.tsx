@@ -1,6 +1,7 @@
 'use client';
 
 import { PropertyInput } from '@/types';
+import { parseNumber, formatCurrencyKorean } from '@/lib/format';
 
 interface Props {
   data: PropertyInput;
@@ -10,6 +11,18 @@ interface Props {
 export default function HousingInput({ data, onChange }: Props) {
   const update = <K extends keyof PropertyInput>(key: K, value: PropertyInput[K]) => {
     onChange({ ...data, [key]: value });
+  };
+
+  const renderMoney = (val: string) => {
+    const num = parseNumber(val);
+    return num > 0 ? formatCurrencyKorean(num) : '';
+  };
+
+  const renderArea = (val: string) => {
+    const num = parseNumber(val);
+    if (num <= 0) return '';
+    const pyeong = (num / 3.3).toFixed(1);
+    return `${num}㎡ (약 ${pyeong}평)`;
   };
 
   return (
@@ -27,6 +40,9 @@ export default function HousingInput({ data, onChange }: Props) {
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="예: 50000"
           />
+          {renderMoney(data.homePrice) && (
+            <p className="mt-1 text-xs text-blue-600 font-medium font-bold">{renderMoney(data.homePrice)}</p>
+          )}
         </div>
 
         <div>
@@ -39,6 +55,9 @@ export default function HousingInput({ data, onChange }: Props) {
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="예: 48000"
           />
+          {renderMoney(data.kbPrice) && (
+            <p className="mt-1 text-xs text-blue-600 font-medium font-bold">{renderMoney(data.kbPrice)}</p>
+          )}
         </div>
 
         <div>
@@ -51,6 +70,9 @@ export default function HousingInput({ data, onChange }: Props) {
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="예: 84"
           />
+          {renderArea(data.exclusiveArea) && (
+            <p className="mt-1 text-xs text-blue-600 font-medium font-bold">{renderArea(data.exclusiveArea)}</p>
+          )}
         </div>
       </div>
 
