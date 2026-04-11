@@ -1,6 +1,8 @@
-export const parseNumber = (value: string): number => {
-  if (!value || value.trim() === '') return 0;
-  const cleaned = value.replace(/,/g, '').trim();
+export const parseNumber = (value: string | number): number => {
+  if (value === undefined || value === null) return 0;
+  const str = String(value);
+  if (str.trim() === '') return 0;
+  const cleaned = str.replace(/,/g, '').trim();
   const num = Number(cleaned);
   return Number.isNaN(num) ? 0 : num;
 };
