@@ -23,6 +23,7 @@ export function parseUserProfile(input: UserProfileInput): UserProfile {
     cash: parseNumber(input.cash),
     existingDebtPayment: parseNumber(input.existingDebtPayment),
     age: parseNumber(input.age),
+    isBirthdayPassed: input.isBirthdayPassed,
     jobType: input.jobType,
     spouseJobType: input.spouseJobType,
     marriageStatus: input.marriageStatus,
@@ -64,7 +65,7 @@ export function calculateLoanSummary(
   const bankMortgage = assessBankMortgage(user, property);
   const repayment = assessGraduatedRepayment(user);
 
-  const stressRate = property.isCapitalArea ? 0 : MARKET_RATE_CONFIG.nonCapitalStressRate;
+  const stressRate = property.isCapitalArea ? MARKET_RATE_CONFIG.capitalStressRate : MARKET_RATE_CONFIG.nonCapitalStressRate;
   const appliedAnnualRate = MARKET_RATE_CONFIG.baseMortgageAnnualRate + stressRate;
   const repaymentComparison =
     user.wantsGraduatedRepayment &&
