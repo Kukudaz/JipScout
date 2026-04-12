@@ -2,6 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+:root {
+  --primary: #30D5C8;
+  --primary-dark: #24A89D;
+  --secondary: #003153;
+  --secondary-bg: #F8FAFC;
+  --accent: #E2F9F7;
+  --text-main: #1D1D1F;
+  --text-sub: #6E6E73;
+  --border: #E5E7EB;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --apple-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--secondary-bg)] text-[var(--text-main)] antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-bold tracking-tight text-[var(--secondary)];
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-[var(--apple-shadow)] rounded-3xl;
+  }
+
+  .premium-button {
+    @apply relative overflow-hidden transition-all duration-300 px-6 py-3 rounded-full font-semibold;
+  }
+
+  .premium-button-primary {
+    @apply bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] hover:shadow-lg active:scale-95;
+  }
+
+  .premium-button-secondary {
+    @apply bg-[var(--secondary)] text-white hover:opacity-90 active:scale-95;
+  }
+
+  .section-container {
+    @apply max-w-6xl mx-auto px-6 py-20;
+  }
+
+  .hero-text {
+    @apply text-5xl md:text-7xl font-bold leading-[1.1] md:leading-[1.05] tracking-[-0.02em];
+  }
+
+  .input-label {
+    @apply text-sm font-semibold text-[var(--text-sub)] mb-2 block;
+  }
+
+  .premium-input {
+    @apply w-full bg-white border border-[var(--border)] rounded-2xl px-4 py-3 outline-none transition-all duration-200 focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--accent)];
+  }
+}
+
+/* Apple-style smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Checkbox/Radio */
+input[type="checkbox"], input[type="radio"] {
+  @apply text-[var(--primary)] focus:ring-[var(--primary)];
 }
