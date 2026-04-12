@@ -73,6 +73,24 @@
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)];
   }
+
+  /* Dashboard Specialized Tokens */
+  .dashboard-card-dark {
+    @apply bg-[var(--secondary)] text-white rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden;
+    background: linear-gradient(135deg, #003153 0%, #001f35 100%);
+  }
+
+  .dashboard-card-white {
+    @apply bg-white border border-gray-100 rounded-[2rem] p-8 shadow-lg;
+  }
+
+  .premium-slider {
+    @apply appearance-none w-full h-2 bg-gray-100 rounded-full outline-none transition-all duration-300;
+  }
+
+  .premium-slider::-webkit-slider-thumb {
+    @apply appearance-none w-6 h-6 bg-[var(--primary)] rounded-full cursor-pointer shadow-lg border-4 border-white active:scale-125 transition-transform;
+  }
 }
 
 html {

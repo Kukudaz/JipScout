@@ -7,6 +7,7 @@ import { calculateLoanSummary } from '@/lib/calculator';
 import FinancialInput from '@/components/FinancialInput';
 import HousingInput from '@/components/HousingInput';
 import ResultCard from '@/components/ResultCard';
+import LoanDashboard from '@/components/LoanDashboard';
 import { validateNumericFields } from '@/lib/validation';
 import { Reveal } from '@/components/ui/Layout';
 import { ScrollLitText } from '@/components/ui/ScrollLitText';
@@ -152,6 +153,18 @@ export default function Home() {
         text="누구도 흉내 낼 수 없는 디테일." 
         subtext="애플의 철학을 담은 인터랙티브 타일과 루사이드 벡터 시스템이 당신의 입력을 예술적인 경험으로 바꿉니다."
       />
+
+      {/* NEW: Interactive Loan Playground Dashboard */}
+      <Reveal>
+         <div className="bg-gray-50/50 border-y border-gray-100">
+            <div className="max-w-7xl mx-auto px-10 pt-32 text-center space-y-6">
+                <span className="text-[var(--primary)] font-black uppercase tracking-[0.5em] text-xs">Real-time Financial Playground</span>
+                <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-[var(--secondary)]">Interactive Dashboard.</h2>
+                <p className="text-xl text-gray-400 font-black tracking-tight max-w-2xl mx-auto">슬라이더를 움직여보세요. 당신의 미래가 실시간으로 바뀝니다.</p>
+            </div>
+            <LoanDashboard />
+         </div>
+      </Reveal>
 
       {/* Main Analysis Engine Section */}
       <section ref={checkerRef} className="bg-[var(--secondary-bg)] py-48 md:py-80 px-6 relative overflow-hidden">
