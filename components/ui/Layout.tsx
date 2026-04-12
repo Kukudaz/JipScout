@@ -62,7 +62,7 @@ export const SectionTitle = ({ title, subtitle, centered = false }: { title: str
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className="text-xl text-[var(--text-sub)] max-w-2xl mx-auto"
+        className={cn("text-xl text-[var(--text-sub)] max-w-2xl", centered && "mx-auto")}
       >
         {subtitle}
       </motion.p>
@@ -70,12 +70,21 @@ export const SectionTitle = ({ title, subtitle, centered = false }: { title: str
   </div>
 );
 
-export const Reveal = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+export const Reveal = ({ 
+  children, 
+  delay = 0,
+  centered = false 
+}: { 
+  children: React.ReactNode; 
+  delay?: number;
+  centered?: boolean;
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+    className={cn(centered && "flex flex-col items-center")}
   >
     {children}
   </motion.div>
