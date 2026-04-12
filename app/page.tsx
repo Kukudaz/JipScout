@@ -9,6 +9,7 @@ import HousingInput from '@/components/HousingInput';
 import ResultCard from '@/components/ResultCard';
 import { validateNumericFields } from '@/lib/validation';
 import { PremiumCard, SectionTitle, Reveal } from '@/components/ui/Layout';
+import { ScrollLitText } from '@/components/ui/ScrollLitText';
 
 const defaultUserProfile: UserProfileInput = {
   myIncome: '',
@@ -47,6 +48,7 @@ export default function Home() {
   const [result, setResult] = useState<FinalLoanSummary | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const resultRef = useRef<HTMLDivElement>(null);
+  const checkerRef = useRef<HTMLDivElement>(null);
 
   const validateInputs = (): string[] => {
     const errors = validateNumericFields([
@@ -56,22 +58,10 @@ export default function Home() {
       { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment, min: 0 },
       { label: '나이', value: userProfile.age, required: true, min: 19, max: 120 },
       { label: '자녀 수', value: userProfile.childrenCount, min: 0 },
-      { label: '기존 생애최초 신혼부부 대출 잔액', value: userProfile.existingFirstHomeLoanBalance, min: 0 },
-      { label: 'NICE 점수', value: userProfile.niceScore, min: 0, max: 1000 },
-      { label: 'KCB 점수', value: userProfile.kcbScore, min: 0, max: 1000 },
+      { label: '기존 정책 대출 잔액', value: userProfile.existingFirstHomeLoanBalance, min: 0 },
       { label: '희망 매매가', value: property.homePrice, required: true, min: 1 },
-      { label: 'KB시세', value: property.kbPrice, min: 1 },
       { label: '전용면적', value: property.exclusiveArea, required: true, min: 1 },
     ]);
-
-    if (userProfile.wantsNewbornRefinance && !userProfile.hasExistingFirstHomeLoan) {
-      errors.push('신생아 특례 갈아타기를 원하면 기존 생애최초 신혼부부 대출 여부를 체크해주세요');
-    }
-
-    if (userProfile.hasExistingFirstHomeLoan && userProfile.existingFirstHomeLoanBalance.trim() === '') {
-      errors.push('기존 잔액을 입력해주세요');
-    }
-
     return errors;
   };
 
@@ -86,71 +76,88 @@ export default function Home() {
     const calculated = calculateLoanSummary(userProfile, property);
     setResult(calculated);
     
-    // Smooth scroll to results
     setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   };
 
+  const scrollToChecker = () => {
+      checkerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+  };
+
   return (
-    <div className="min-h-screen bg-[var(--secondary-bg)]">
+    <div className="min-h-screen bg-[var(--secondary-bg)] overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100">
+      <nav className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-2xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <span className="text-xl font-black text-[var(--secondary)] tracking-tighter">
             Jip<span className="text-[var(--primary)]">Scout</span>
           </span>
-          <div className="hidden md:flex gap-8 text-sm font-medium text-[var(--text-sub)]">
-            <a href="#" className="hover:text-[var(--primary)] transition-colors">내 한도</a>
-            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">매물 찾기</a>
-            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">거래 트렌드</a>
+          <div className="hidden md:flex gap-10 text-[11px] font-black uppercase tracking-widest text-[var(--text-sub)]">
+            <a href="#" className="text-[var(--secondary)]">Overview</a>
+            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">Property matching</a>
+            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">Trends</a>
           </div>
-          <button className="premium-button premium-button-secondary text-xs">
-            로그인
+          <button onClick={scrollToChecker} className="premium-button premium-button-primary text-[10px] py-2 px-5">
+            지금 계산하기
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="section-container pt-40 pb-20 text-center">
+      <section className="section-container pt-56 pb-20">
         <Reveal>
-          <h1 className="hero-text mb-6">
-            집을 찾기 전,<br/>
-            나의 <span className="text-[var(--primary)]">진짜 예산</span>부터.
+          <h1 className="hero-text text-center mb-12">
+            드디어 당신이<br/>
+            <span className="text-[var(--primary)]">살 수 있는 집</span>을<br/>
+            찾았습니다.
           </h1>
-          <p className="text-xl text-[var(--text-sub)] max-w-2xl mx-auto leading-relaxed">
-            2026년 최신 금융 정책을 반영한 초정밀 대출 판정 엔진.<br/>
-            신생아 특례부터 체증식 상환까지, 당신이 가질 수 있는 모든 옵션을 한 눈에 시각화합니다.
-          </p>
         </Reveal>
       </section>
 
-      {/* Calculator Section */}
-      <section className="max-w-5xl mx-auto px-6 pb-40">
-        <PremiumCard className="overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="space-y-8">
+      {/* Cinematic Scroll Sections */}
+      <ScrollLitText 
+        text="가장 정밀한 데이터를 경험하세요." 
+        subtext="2026년 최신 국가 정책(신생아 특례, 디딤돌)과 은행권 스트레스 DSR을 모두 실시간으로 반영합니다."
+      />
+
+      <ScrollLitText 
+        text="복잡한 대출을 숫자로 시각화하다." 
+        subtext="단순히 '가능/불가'를 넘어, 당신의 예산과 현금 흐름을 완벽하게 분석하여 한눈에 보여드립니다."
+      />
+
+      {/* Main Checker Section */}
+      <section ref={checkerRef} className="max-w-6xl mx-auto px-6 py-40">
+        <PremiumCard className="relative">
+          <div className="absolute top-8 left-8">
+             <span className="bg-[var(--accent)] text-[var(--primary)] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
+                Calculator Engine v.2026
+             </span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mt-10">
+            <div className="space-y-10">
               <SectionTitle 
-                title="금융 프로필" 
-                subtitle="소득과 현금, 부채 수준을 입력하세요." 
+                title="프로필 입력" 
+                subtitle="나와 배우자(와이프)의 조건을 상세히 알려주세요." 
               />
               <FinancialInput data={userProfile} onChange={setUserProfile} />
             </div>
-            <div className="space-y-8">
+            <div className="space-y-10">
               <SectionTitle 
-                title="희망 주택" 
-                subtitle="관심 있는 단지의 정보를 입력하세요." 
+                title="주택 정보" 
+                subtitle="매수를 고민 중인 집의 정보를 입력하세요." 
               />
               <HousingInput data={property} onChange={setProperty} />
             </div>
           </div>
 
-          <div className="mt-12 pt-12 border-t border-gray-100">
+          <div className="mt-20 pt-12 border-t border-gray-100 text-center">
             <button
               onClick={handleCalculate}
-              className="w-full premium-button premium-button-primary py-5 text-xl font-black shadow-2xl hover:translate-y-[-2px]"
+              className="w-full md:w-auto md:px-24 premium-button premium-button-primary py-6 text-2xl font-black shadow-[0_20px_50px_rgba(48,213,200,0.3)] hover:scale-[1.02]"
             >
-              내 한도 정밀 분석 시작하기
+              분석 리포트 생성하기
             </button>
 
             <AnimatePresence>
@@ -159,10 +166,10 @@ export default function Home() {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="mt-6 bg-rose-50 border border-rose-100 rounded-2xl p-6 text-rose-600 overflow-hidden"
+                  className="mt-8 bg-rose-50 border border-rose-100 rounded-2xl p-6 text-rose-600 overflow-hidden text-left"
                 >
-                  <p className="font-bold mb-2">입력값을 확인해주세요:</p>
-                  <ul className="text-sm space-y-1">
+                  <p className="font-black text-sm mb-3">⚠️ 입력을 완료해주세요:</p>
+                  <ul className="text-xs space-y-2 opacity-80">
                     {validationErrors.map((err, i) => (
                       <li key={i} className="flex gap-2"><span>•</span> {err}</li>
                     ))}
@@ -177,60 +184,41 @@ export default function Home() {
       {/* Results Section */}
       <AnimatePresence>
         {result && (
-          <section ref={resultRef} className="section-container border-t border-gray-200">
-            <SectionTitle 
-              title="분석 결과 리포트" 
-              subtitle="당신을 위한 최적의 대출 시나리오를 찾았습니다."
-              centered 
-            />
+          <section ref={resultRef} className="section-container bg-white rounded-[5rem] shadow-2xl mt-[-5rem] relative z-10 py-40 border-t border-gray-100">
+            <Reveal centered>
+                <div className="mb-20">
+                    <span className="text-[var(--primary)] font-black tracking-widest uppercase text-xs">Analysis Complete</span>
+                    <h2 className="text-5xl md:text-7xl font-black mt-4">분석 리포트</h2>
+                </div>
+            </Reveal>
             <ResultCard result={result} />
           </section>
         )}
       </AnimatePresence>
 
-      {/* Feature Placeholders */}
-      <section className="section-container bg-[var(--secondary)] text-white rounded-[4rem] mx-6 mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-              <div>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">
-                      한도에 딱 맞는<br/>
-                      <span className="text-[var(--primary)]">매물을 찾아드려요.</span>
-                  </h2>
-                  <p className="text-lg opacity-60 mb-10 leading-relaxed">
-                      입력된 예산을 바탕으로 실시간 실거래가 데이터를 매칭하여, <br/>
-                      당신이 실제로 살 수 있는 아파트를 지도 위에서 바로 보여드릴 예정입니다.
-                  </p>
-                  <button className="premium-button premium-button-primary opacity-50 cursor-not-allowed">
-                      베타 테스트 준비 중
-                  </button>
-              </div>
-              <div className="relative aspect-square bg-white/5 rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center">
-                  <span className="text-white/20 text-8xl font-black uppercase tracking-tighter">Mockup</span>
-              </div>
-          </div>
-      </section>
+      <ScrollLitText 
+        text="우리는 매물 그 이상을 봅니다." 
+        subtext="한도 판정이 끝나면 당신의 예산에 딱 맞는 최고의 아파트들을 추천해 드립니다."
+      />
 
       {/* Footer */}
-      <footer className="bg-white py-20 px-6 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
-          <div className="space-y-4">
-            <span className="text-2xl font-black text-[var(--secondary)]">JipScout</span>
-            <p className="text-sm text-[var(--text-sub)] max-w-xs">
-              2026 정밀 대출 판정 시스템. <br/>
-              우리는 당신의 내 집 마련 여정을 기술로 응원합니다.
+      <footer className="bg-white py-32 px-10 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
+          <div className="md:col-span-2 space-y-6">
+            <span className="text-3xl font-black text-[var(--secondary)] tracking-tighter">Jip<span className="text-[var(--primary)]">Scout</span></span>
+            <p className="text-sm text-[var(--text-sub)] max-w-sm leading-relaxed">
+              모든 사람이 안전하고 투명하게 내 집 마련의 꿈을 설계할 수 있도록 정밀 금융 공학으로 계산합니다.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 text-sm">
-            <div className="space-y-3">
-              <p className="font-bold text-[var(--secondary)]">서비스</p>
-              <p className="text-[var(--text-sub)]">한도 판정</p>
-              <p className="text-[var(--text-sub)]">매물 찾기</p>
-            </div>
-            <div className="space-y-3">
-              <p className="font-bold text-[var(--secondary)]">정책 정보</p>
-              <p className="text-[var(--text-sub)]">신생아 특례</p>
-              <p className="text-[var(--text-sub)]">디딤돌/보금자리</p>
-            </div>
+          <div className="space-y-6 text-sm">
+            <p className="font-black text-[var(--secondary)] uppercase tracking-widest text-xs">Policy</p>
+            <p className="text-[var(--text-sub)] cursor-not-allowed">이용약관</p>
+            <p className="text-[var(--text-sub)] cursor-not-allowed">개인정보처리방침</p>
+          </div>
+          <div className="space-y-6 text-sm">
+            <p className="font-black text-[var(--secondary)] uppercase tracking-widest text-xs">Contact</p>
+            <p className="text-[var(--text-sub)]">partnership@jipscout.com</p>
+            <p className="text-xs text-gray-400">© 2026 JipScout Design.</p>
           </div>
         </div>
       </footer>
