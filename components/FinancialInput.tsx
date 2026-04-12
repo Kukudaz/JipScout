@@ -208,21 +208,21 @@ export default function FinancialInput({ data, onChange }: Props) {
                 <label className="input-label flex items-center gap-2 whitespace-nowrap text-lg">
                     <Activity className="w-5 h-5 text-[var(--primary)]" /> 만 나이
                 </label>
-                <div className="flex items-center gap-6">
+                <div className="flex flex-col items-center gap-4">
                     <input
                         type="text"
                         inputMode="numeric"
                         value={data.age}
                         onChange={(e) => update('age', e.target.value)}
-                        className="premium-input text-center text-4xl py-10 w-32"
+                        className="premium-input text-center text-4xl py-6 w-full"
                         placeholder="33"
                     />
-                    <label className="flex items-center gap-3 cursor-pointer group shrink-0">
-                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${data.isBirthdayPassed ? 'bg-[var(--primary)] border-[var(--primary)] shadow-md' : 'border-gray-200'}`}>
+                    <label className="flex items-center gap-3 cursor-pointer group w-full py-2 px-4 bg-gray-50 rounded-xl border border-gray-100/50 hover:bg-white transition-colors">
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${data.isBirthdayPassed ? 'bg-[var(--primary)] border-[var(--primary)] shadow-sm' : 'border-gray-200'}`}>
                             {data.isBirthdayPassed && <div className="w-2 h-2 bg-white rounded-sm" />}
                         </div>
                         <input type="checkbox" checked={data.isBirthdayPassed} onChange={e => update('isBirthdayPassed', e.target.checked)} className="hidden" />
-                        <span className="text-xs font-black text-gray-300 group-hover:text-[var(--secondary)] whitespace-nowrap">생일 지남</span>
+                        <span className="text-[10px] font-black text-gray-400 group-hover:text-[var(--secondary)] whitespace-nowrap uppercase tracking-widest">Birthday Passed</span>
                     </label>
                 </div>
             </div>

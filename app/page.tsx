@@ -169,7 +169,7 @@ export default function Home() {
                 </div>
             </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-32">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-24">
                 {/* Profile Grid */}
                 <div className="lg:col-span-12 xl:col-span-7 flex flex-col gap-24 md:gap-40">
                     <section className="relative">
@@ -178,9 +178,8 @@ export default function Home() {
                     </section>
                 </div>
 
-                {/* Property Module - Balanced Proximity */}
-                <div className="hidden xl:col-span-1 xl:block"></div>
-                <div className="xl:col-span-12 xl:col-span-4 h-fit">
+                {/* Property Module - Pulled Tight to Left */}
+                <div className="xl:col-span-5 h-fit hidden xl:block sticky top-40">
                     <div className="flex flex-col gap-8">
                          <div className="flex items-center gap-4">
                             <CheckCircle2 className="w-7 h-7 text-[var(--primary)]" />
