@@ -92,23 +92,23 @@ export default function LoanDashboard() {
 
           {/* Sliders */}
           <div className="space-y-8">
-            <Slider label="연소득 (본인)" unit="만원" min={0} max={20000} step={100} value={Number(profile.myIncome)} onChange={(v) => up('myIncome', v)} />
+            <Slider label="연소득 (본인)" unit="만원" min={0} max={100000} step={100} value={Number(profile.myIncome)} onChange={(v) => up('myIncome', v)} showKorean />
 
             <AnimatePresence>
               {isMarried && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
-                  <Slider label="연소득 (배우자)" unit="만원" min={0} max={20000} step={100} value={Number(profile.spouseIncome)} onChange={(v) => up('spouseIncome', v)} />
+                  <Slider label="연소득 (배우자)" unit="만원" min={0} max={100000} step={100} value={Number(profile.spouseIncome)} onChange={(v) => up('spouseIncome', v)} showKorean />
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <Slider label="보유 현금" unit="만원" min={0} max={100000} step={500} value={Number(profile.cash)} onChange={(v) => up('cash', v)} />
-            <Slider label="기존 월 부채 상환액" unit="만원" min={0} max={500} step={5} value={Number(profile.existingDebtPayment)} onChange={(v) => up('existingDebtPayment', v)} />
+            <Slider label="보유 현금" unit="만원" min={0} max={1000000} step={500} value={Number(profile.cash)} onChange={(v) => up('cash', v)} showKorean />
+            <Slider label="기존 월 부채 상환액" unit="만원" min={0} max={2000} step={5} value={Number(profile.existingDebtPayment)} onChange={(v) => up('existingDebtPayment', v)} showKorean />
             <Slider label="만 나이" unit="세" min={19} max={65} step={1} value={Number(profile.age)} onChange={(v) => up('age', v)} />
 
             <div className="h-px bg-gray-100" />
 
-            <Slider label="희망 주택 가격" unit="만원" min={10000} max={150000} step={1000} value={homePrice} onChange={(v) => { pp('homePrice', v); pp('kbPrice', v); }} />
+            <Slider label="희망 주택 가격" unit="만원" min={10000} max={1000000} step={1000} value={homePrice} onChange={(v) => { pp('homePrice', v); pp('kbPrice', v); }} showKorean />
             <Slider label="전용면적" unit="㎡" min={30} max={150} step={1} value={Number(property.exclusiveArea)} onChange={(v) => pp('exclusiveArea', v)} />
           </div>
 
