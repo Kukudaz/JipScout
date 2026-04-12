@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { UserProfileInput, PropertyInput, FinalLoanSummary } from '@/types';
 import { calculateLoanSummary } from '@/lib/calculator';
 import FinancialInput from '@/components/FinancialInput';
@@ -47,31 +47,33 @@ export default function Home() {
   const [property, setProperty] = useState<PropertyInput>(defaultProperty);
   const [result, setResult] = useState<FinalLoanSummary | null>(null);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  
   const resultRef = useRef<HTMLDivElement>(null);
   const checkerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const validateInputs = (): string[] => {
-    const errors = validateNumericFields([
+    return validateNumericFields([
       { label: '본인 연소득', value: userProfile.myIncome, required: true, min: 0 },
-      { label: '배우자 연소득', value: userProfile.spouseIncome, min: 0 },
       { label: '보유 현금', value: userProfile.cash, required: true, min: 0 },
-      { label: '기존 월 부채 상환액', value: userProfile.existingDebtPayment, min: 0 },
       { label: '나이', value: userProfile.age, required: true, min: 19, max: 120 },
-      { label: '자녀 수', value: userProfile.childrenCount, min: 0 },
-      { label: '기존 정책 대출 잔액', value: userProfile.existingFirstHomeLoanBalance, min: 0 },
       { label: '희망 매매가', value: property.homePrice, required: true, min: 1 },
       { label: '전용면적', value: property.exclusiveArea, required: true, min: 1 },
     ]);
-    return errors;
   };
 
   const handleCalculate = () => {
     const errors = validateInputs();
     setValidationErrors(errors);
-    if (errors.length > 0) {
-      setResult(null);
-      return;
-    }
+    if (errors.length > 0) return;
 
     const calculated = calculateLoanSummary(userProfile, property);
     setResult(calculated);
@@ -81,145 +83,192 @@ export default function Home() {
     }, 100);
   };
 
-  const scrollToChecker = () => {
-      checkerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-  };
-
   return (
-    <div className="min-h-screen bg-[var(--secondary-bg)] overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-2xl border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-3xl border-b border-gray-100/50">
+        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-xl font-black text-[var(--secondary)] tracking-tighter">
             Jip<span className="text-[var(--primary)]">Scout</span>
           </span>
-          <div className="hidden md:flex gap-10 text-[11px] font-black uppercase tracking-widest text-[var(--text-sub)]">
-            <a href="#" className="text-[var(--secondary)]">Overview</a>
-            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">Property matching</a>
-            <a href="#" className="hover:text-[var(--primary)] transition-colors opacity-40">Trends</a>
+          <div className="hidden md:flex gap-12 text-[10px] font-black uppercase tracking-widest text-[var(--secondary)]/60">
+            <a href="#" className="hover:text-[var(--primary)]">Engine</a>
+            <a href="#" className="hover:text-[var(--primary)]">Comparison</a>
+            <a href="#" className="hover:text-[var(--primary)]">Policies</a>
           </div>
-          <button onClick={scrollToChecker} className="premium-button premium-button-primary text-[10px] py-2 px-5">
-            지금 계산하기
+          <button 
+            onClick={() => checkerRef.current?.scrollIntoView({ behavior: 'smooth' })} 
+            className="bg-[var(--secondary)] text-white text-[9px] font-black uppercase tracking-widest px-6 py-2 rounded-full hover:scale-105 transition-transform"
+          >
+            Calculate
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="section-container pt-56 pb-20">
-        <Reveal>
-          <h1 className="hero-text text-center mb-12">
-            드디어 당신이<br/>
-            <span className="text-[var(--primary)]">살 수 있는 집</span>을<br/>
-            찾았습니다.
-          </h1>
-        </Reveal>
+      <section ref={heroRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black">
+        <motion.div 
+            style={{ scale: heroScale, opacity: heroOpacity }}
+            className="absolute inset-0 w-full h-full"
+        >
+            <img 
+                src="/hero.png" 
+                alt="Premium Home" 
+                className="w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-white" />
+        </motion.div>
+
+        <div className="relative z-10 text-center px-6">
+            <Reveal>
+              <span className="text-[var(--primary)] font-black uppercase tracking-[0.3em] text-xs mb-8 block">Project JipScout 2026</span>
+              <h1 className="hero-text text-white drop-shadow-2xl">
+                집을 찾기 전,<br/>
+                나의 <span className="text-[var(--primary)]">진짜 예산</span>부터.
+              </h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 0.8, y: 0 }}
+                transition={{ delay: 0.8, duration: 1 }}
+                className="text-white/80 text-lg md:text-2xl mt-12 max-w-2xl mx-auto font-medium"
+              >
+                가장 정밀한 알고리즘이 당신의 재무 상태와<br/>국가 정책을 분석하여 한도를 결정합니다.
+              </motion.p>
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}
+                onClick={() => checkerRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                className="mt-16 bg-white text-[var(--secondary)] font-black px-12 py-5 rounded-full text-lg hover:scale-105 transition-transform shadow-2xl"
+              >
+                한도 정밀 분석 시작하기
+              </motion.button>
+            </Reveal>
+        </div>
       </section>
 
-      {/* Cinematic Scroll Sections */}
+      {/* Cinematic Narrative */}
       <ScrollLitText 
-        text="가장 정밀한 데이터를 경험하세요." 
-        subtext="2026년 최신 국가 정책(신생아 특례, 디딤돌)과 은행권 스트레스 DSR을 모두 실시간으로 반영합니다."
+        text="당신과 배우자, 모두의 조건을 담다." 
+        subtext="놓치기 쉬운 배우자의 소득과 직업 형태까지 완벽하게 반영하여 최적의 대출 시나리오를 설계합니다."
       />
 
-      <ScrollLitText 
-        text="복잡한 대출을 숫자로 시각화하다." 
-        subtext="단순히 '가능/불가'를 넘어, 당신의 예산과 현금 흐름을 완벽하게 분석하여 한눈에 보여드립니다."
-      />
-
-      {/* Main Checker Section */}
-      <section ref={checkerRef} className="max-w-6xl mx-auto px-6 py-40">
-        <PremiumCard className="relative">
-          <div className="absolute top-8 left-8">
-             <span className="bg-[var(--accent)] text-[var(--primary)] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                Calculator Engine v.2026
-             </span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mt-10">
-            <div className="space-y-10">
-              <SectionTitle 
-                title="프로필 입력" 
-                subtitle="나와 배우자(와이프)의 조건을 상세히 알려주세요." 
-              />
-              <FinancialInput data={userProfile} onChange={setUserProfile} />
-            </div>
-            <div className="space-y-10">
-              <SectionTitle 
-                title="주택 정보" 
-                subtitle="매수를 고민 중인 집의 정보를 입력하세요." 
-              />
-              <HousingInput data={property} onChange={setProperty} />
-            </div>
-          </div>
-
-          <div className="mt-20 pt-12 border-t border-gray-100 text-center">
-            <button
-              onClick={handleCalculate}
-              className="w-full md:w-auto md:px-24 premium-button premium-button-primary py-6 text-2xl font-black shadow-[0_20px_50px_rgba(48,213,200,0.3)] hover:scale-[1.02]"
-            >
-              분석 리포트 생성하기
-            </button>
-
-            <AnimatePresence>
-              {validationErrors.length > 0 && (
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="mt-8 bg-rose-50 border border-rose-100 rounded-2xl p-6 text-rose-600 overflow-hidden text-left"
-                >
-                  <p className="font-black text-sm mb-3">⚠️ 입력을 완료해주세요:</p>
-                  <ul className="text-xs space-y-2 opacity-80">
-                    {validationErrors.map((err, i) => (
-                      <li key={i} className="flex gap-2"><span>•</span> {err}</li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </PremiumCard>
-      </section>
-
-      {/* Results Section */}
-      <AnimatePresence>
-        {result && (
-          <section ref={resultRef} className="section-container bg-white rounded-[5rem] shadow-2xl mt-[-5rem] relative z-10 py-40 border-t border-gray-100">
-            <Reveal centered>
-                <div className="mb-20">
-                    <span className="text-[var(--primary)] font-black tracking-widest uppercase text-xs">Analysis Complete</span>
-                    <h2 className="text-5xl md:text-7xl font-black mt-4">분석 리포트</h2>
+      {/* Main Form Section */}
+      <section ref={checkerRef} className="bg-[var(--secondary-bg)] py-32 md:py-60 px-6">
+        <div className="max-w-7xl mx-auto">
+            <Reveal>
+                <div className="mb-24 text-center">
+                    <h2 className="text-5xl md:text-8xl font-black tracking-tighter mb-6">금융 프로필</h2>
+                    <p className="text-xl text-[var(--text-sub)] font-medium">당신의 조건을 하나도 빠짐없이 입력해주세요.</p>
                 </div>
             </Reveal>
-            <ResultCard result={result} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 md:gap-24 items-start">
+               {/* Left: Financial Inputs */}
+               <div className="lg:col-span-3 space-y-20">
+                    <div className="relative">
+                        <div className="absolute -left-12 top-0 text-[120px] font-black text-gray-100 select-none z-0">01</div>
+                        <div className="relative z-10">
+                            <FinancialInput data={userProfile} onChange={setUserProfile} />
+                        </div>
+                    </div>
+               </div>
+
+               {/* Right: Property Inputs */}
+               <div className="lg:col-span-2 sticky top-32">
+                    <div className="relative bg-white rounded-[3rem] p-10 shadow-2xl border border-gray-100">
+                        <div className="absolute -top-10 -right-6 text-[100px] font-black text-[var(--primary)]/10 select-none">02</div>
+                        <SectionTitle 
+                            title="주택 정보" 
+                            subtitle="매수를 고민 중인 집의 정보" 
+                        />
+                        <div className="mt-10">
+                            <HousingInput data={property} onChange={setProperty} />
+                        </div>
+
+                        <div className="mt-16 space-y-4">
+                            <button
+                                onClick={handleCalculate}
+                                className="w-full premium-button premium-button-primary shadow-[0_20px_60px_rgba(48,213,200,0.3)]"
+                            >
+                                분석 리포트 생성
+                            </button>
+                            
+                            <AnimatePresence>
+                                {validationErrors.length > 0 && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="p-6 bg-rose-50 text-rose-600 rounded-3xl text-sm font-bold border border-rose-100"
+                                    >
+                                        <p className="mb-2">⚠️ 확인이 필요합니다:</p>
+                                        <ul className="space-y-1 text-xs opacity-70">
+                                            {validationErrors.map((err, i) => <li key={i}>• {err}</li>)}
+                                        </ul>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Results Rendering */}
+      <AnimatePresence>
+        {result && (
+          <section ref={resultRef} className="py-40 bg-white rounded-[5rem] shadow-2xl relative z-20 mt-[-5rem]">
+            <div className="max-w-6xl mx-auto px-6">
+                <Reveal centered>
+                    <div className="text-center mb-24">
+                        <span className="text-[var(--primary)] font-black uppercase tracking-[0.4em] text-xs">Analysis Result</span>
+                        <h2 className="text-6xl md:text-[100px] font-black tracking-tighter mt-4">분석 리포트.</h2>
+                    </div>
+                </Reveal>
+                <ResultCard result={result} />
+            </div>
           </section>
         )}
       </AnimatePresence>
 
       <ScrollLitText 
-        text="우리는 매물 그 이상을 봅니다." 
-        subtext="한도 판정이 끝나면 당신의 예산에 딱 맞는 최고의 아파트들을 추천해 드립니다."
+        text="당신의 꿈은 여기서 현실이 됩니다." 
+        subtext="빅데이터 분석을 통해 당신의 한도 내에서 가장 가치 있는 매물을 매칭해 드릴 예정입니다.."
       />
 
-      {/* Footer */}
-      <footer className="bg-white py-32 px-10 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
-          <div className="md:col-span-2 space-y-6">
-            <span className="text-3xl font-black text-[var(--secondary)] tracking-tighter">Jip<span className="text-[var(--primary)]">Scout</span></span>
-            <p className="text-sm text-[var(--text-sub)] max-w-sm leading-relaxed">
-              모든 사람이 안전하고 투명하게 내 집 마련의 꿈을 설계할 수 있도록 정밀 금융 공학으로 계산합니다.
+      {/* Modern Mockup Section */}
+      <section className="section-container bg-[var(--secondary)] rounded-[4rem] text-white overflow-hidden py-32 flex flex-col md:flex-row items-center gap-20">
+         <div className="flex-1 space-y-8">
+            <h2 className="text-5xl md:text-7xl font-black text-white leading-tight">
+                한도에 딱 맞는<br/>
+                <span className="text-[var(--primary)]">매물을 찾아드려요.</span>
+            </h2>
+            <p className="text-white/60 text-lg md:text-xl font-medium max-w-md">
+                입력된 예산을 바탕으로 실시간 실거래가 데이터를 매칭하여, 당신이 실제로 살 수 있는 아파트를 지도 위에서 바로 보여드릴 예정입니다.
             </p>
-          </div>
-          <div className="space-y-6 text-sm">
-            <p className="font-black text-[var(--secondary)] uppercase tracking-widest text-xs">Policy</p>
-            <p className="text-[var(--text-sub)] cursor-not-allowed">이용약관</p>
-            <p className="text-[var(--text-sub)] cursor-not-allowed">개인정보처리방침</p>
-          </div>
-          <div className="space-y-6 text-sm">
-            <p className="font-black text-[var(--secondary)] uppercase tracking-widest text-xs">Contact</p>
-            <p className="text-[var(--text-sub)]">partnership@jipscout.com</p>
-            <p className="text-xs text-gray-400">© 2026 JipScout Design.</p>
-          </div>
+            <div className="inline-block px-8 py-4 bg-white/10 backdrop-blur-xl rounded-2xl text-[var(--primary)] font-black text-xs uppercase tracking-widest">
+                베타 테스트 준비 중
+            </div>
+         </div>
+         <div className="flex-1 w-full max-w-lg aspect-square bg-white/5 rounded-[3rem] border border-white/10 flex items-center justify-center text-8xl font-black text-white/10 select-none">
+            MOCKUP
+         </div>
+      </section>
+
+      {/* Luxury Footer */}
+      <footer className="bg-white pt-48 pb-20 px-10">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+            <span className="text-5xl font-black text-[var(--secondary)] tracking-tighter mb-12">
+                Jip<span className="text-[var(--primary)]">Scout</span>
+            </span>
+            <div className="flex gap-12 text-[10px] font-black uppercase tracking-widest text-[var(--text-sub)] mb-20 lg:mb-32">
+                <a href="#">Engine</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Copyright 2026</a>
+            </div>
+            <p className="text-[10px] text-gray-300 font-bold">PROUDLY BUILT WITH PRECISION FINANCE ENGINEERING.</p>
         </div>
       </footer>
     </div>

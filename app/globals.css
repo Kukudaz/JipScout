@@ -12,7 +12,7 @@
   --text-sub: #6E6E73;
   --border: #E5E7EB;
   --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --apple-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --apple-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
 }
 
 @layer base {
@@ -22,41 +22,45 @@
   }
 
   h1, h2, h3, h4, h5 {
-    @apply font-bold tracking-tight text-[var(--secondary)];
+    @apply font-black tracking-tight text-[var(--secondary)];
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-[var(--apple-shadow)] rounded-3xl;
+    @apply bg-white/90 backdrop-blur-3xl border border-white/20 shadow-[var(--apple-shadow)] rounded-[3rem];
   }
 
   .premium-button {
-    @apply relative overflow-hidden transition-all duration-300 px-6 py-3 rounded-full font-semibold;
+    @apply relative overflow-hidden transition-all duration-500 px-8 py-4 rounded-full font-black tracking-tighter;
   }
 
   .premium-button-primary {
-    @apply bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] hover:shadow-lg active:scale-95;
+    @apply bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] hover:shadow-2xl active:scale-95 text-xl;
   }
 
   .premium-button-secondary {
-    @apply bg-[var(--secondary)] text-white hover:opacity-90 active:scale-95;
+    @apply bg-[var(--secondary)] text-white hover:opacity-95 active:scale-95;
   }
 
   .section-container {
-    @apply max-w-6xl mx-auto px-6 py-20;
+    @apply max-w-7xl mx-auto px-6 py-40;
   }
 
   .hero-text {
-    @apply text-5xl md:text-7xl font-bold leading-[1.1] md:leading-[1.05] tracking-[-0.02em];
+    @apply text-6xl md:text-[110px] font-black leading-[1.0] md:leading-[0.95] tracking-[-0.04em];
   }
 
   .input-label {
-    @apply text-sm font-semibold text-[var(--text-sub)] mb-2 block;
+    @apply text-[10px] font-black uppercase tracking-widest text-[var(--text-sub)] mb-3 block;
   }
 
   .premium-input {
-    @apply w-full bg-white border border-[var(--border)] rounded-2xl px-4 py-3 outline-none transition-all duration-200 focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--accent)];
+    @apply w-full bg-white border border-[var(--border)] rounded-2xl px-5 py-4 outline-none transition-all duration-300 font-bold focus:border-[var(--primary)] focus:ring-[10px] focus:ring-[var(--accent)];
+  }
+  
+  .stagger-reveal > * {
+    @apply transition-all duration-1000 transform;
   }
 }
 
@@ -67,5 +71,14 @@ html {
 
 /* Custom Checkbox/Radio */
 input[type="checkbox"], input[type="radio"] {
-  @apply text-[var(--primary)] focus:ring-[var(--primary)];
+  @apply text-[var(--primary)] focus:ring-[var(--primary)] rounded;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
