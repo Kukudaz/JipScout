@@ -169,30 +169,31 @@ export default function Home() {
                 </div>
             </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-32">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-32">
                 {/* Profile Grid */}
-                <div className="lg:col-span-12 xl:col-span-8 flex flex-col gap-40">
+                <div className="lg:col-span-12 xl:col-span-7 flex flex-col gap-24 md:gap-40">
                     <section className="relative">
-                        <div className="absolute -left-24 -top-12 text-[240px] font-black text-gray-100/50 select-none -z-10 tracking-tighter opacity-70">01</div>
+                        <div className="absolute -left-20 -top-8 text-[120px] md:text-[240px] font-black text-gray-100/50 select-none -z-10 tracking-tighter opacity-70">01</div>
                         <FinancialInput data={userProfile} onChange={setUserProfile} />
                     </section>
                 </div>
 
-                {/* Property Sticky Module */}
+                {/* Property Sticky Module - Balanced Width */}
+                <div className="hidden xl:col-span-1 xl:block"></div> {/* Spacer */}
                 <div className="hidden xl:block xl:col-span-4 sticky top-40 h-fit">
-                    <div className="bg-white/60 backdrop-blur-3xl rounded-[5rem] p-16 shadow-[var(--apple-shadow)] border border-white/40 flex flex-col gap-16">
-                         <div className="space-y-12">
+                    <div className="bg-white/60 backdrop-blur-3xl rounded-[4rem] p-10 md:p-14 shadow-[var(--apple-shadow)] border border-white/40 flex flex-col gap-12">
+                         <div className="space-y-10">
                             <div className="flex items-center gap-4">
-                                <CheckCircle2 className="w-8 h-8 text-[var(--primary)]" />
-                                <h3 className="text-4xl font-black tracking-tighter leading-none">02 Property<br/>Intelligence</h3>
+                                <CheckCircle2 className="w-7 h-7 text-[var(--primary)]" />
+                                <h3 className="text-3xl font-black tracking-tighter leading-tight whitespace-nowrap overflow-visible">02 Property<br/>Intelligence</h3>
                             </div>
                             <HousingInput data={property} onChange={setProperty} />
                          </div>
 
-                         <div className="pt-12 border-t-2 border-dashed border-gray-100 space-y-8">
+                         <div className="pt-10 border-t-2 border-dashed border-gray-100 space-y-6">
                             <button
                                 onClick={handleCalculate}
-                                className="w-full premium-button premium-button-primary py-10 text-3xl font-black shadow-[0_40px_80px_rgba(48,213,200,0.4)]"
+                                className="w-full premium-button premium-button-primary py-8 text-2xl font-black shadow-[0_30px_60px_rgba(48,213,200,0.4)] whitespace-nowrap overflow-hidden text-ellipsis"
                             >
                                 분석 리포트 생성
                             </button>
@@ -202,11 +203,11 @@ export default function Home() {
                                     <motion.div 
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="p-10 bg-rose-50 border border-rose-100 rounded-[3rem] text-rose-600 space-y-6"
+                                        className="p-8 bg-rose-50 border border-rose-100 rounded-[2.5rem] text-rose-600 space-y-4"
                                     >
-                                        <p className="text-lg font-black">Missing Credentials:</p>
-                                        <ul className="text-sm space-y-2 opacity-80 font-black">
-                                            {validationErrors.map((err, i) => <li key={i} className="flex gap-3"><span>•</span> {err}</li>)}
+                                        <p className="text-base font-black">Missing Data:</p>
+                                        <ul className="text-xs space-y-1 opacity-80 font-black">
+                                            {validationErrors.map((err, i) => <li key={i} className="flex gap-2 text-left"><span>•</span> {err}</li>)}
                                         </ul>
                                     </motion.div>
                                 )}
@@ -217,9 +218,9 @@ export default function Home() {
             </div>
             
             {/* Mobile Property Module */}
-            <div className="xl:hidden mt-32">
-                 <div className="bg-white/60 backdrop-blur-3xl rounded-[4rem] p-12 shadow-[var(--apple-shadow)] border border-white/40 space-y-12">
-                    <h3 className="text-4xl font-black tracking-tighter">02 Property Info</h3>
+            <div className="xl:hidden mt-24">
+                 <div className="bg-white/60 backdrop-blur-3xl rounded-[3rem] p-10 shadow-[var(--apple-shadow)] border border-white/40 space-y-10">
+                    <h3 className="text-3xl font-black tracking-tighter">02 Property Info</h3>
                     <HousingInput data={property} onChange={setProperty} />
                     <button onClick={handleCalculate} className="w-full premium-button premium-button-primary py-8 text-2xl font-black">분석 리포트 생성</button>
                  </div>

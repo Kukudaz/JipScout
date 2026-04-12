@@ -35,71 +35,67 @@ export default function HousingInput({ data, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-16">
-      {/* 1. Price Context - Ultra Premium Cards */}
-      <div className="space-y-10 p-12 rounded-[4rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100 relative overflow-hidden">
-         <div className="absolute top-0 right-0 p-8 opacity-5">
-            <Landmark className="w-32 h-32 text-[var(--secondary)]" />
+    <div className="space-y-12">
+      {/* 1. Price Context - Stabilized Cards */}
+      <div className="space-y-8 p-10 rounded-[3rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100 relative overflow-hidden">
+         <div className="absolute top-0 right-0 p-6 opacity-5">
+            <Landmark className="w-24 h-24 text-[var(--secondary)]" />
          </div>
          
-         <div className="flex items-center gap-4 mb-10 relative z-10">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] shadow-lg">
-                <Building2 className="w-6 h-6" />
+         <div className="flex items-center gap-3 mb-8 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] shadow-lg">
+                <Building2 className="w-5 h-5" />
             </div>
-            <h3 className="text-2xl font-black tracking-tighter text-[var(--secondary)]">부동산 시세 정보</h3>
+            <h3 className="text-xl font-black tracking-tighter text-[var(--secondary)] whitespace-nowrap">부동산 시세 정보</h3>
          </div>
          
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
-            <div className="space-y-4">
-                <label className="input-label text-gray-400 uppercase tracking-widest text-[10px]">Actual Home Price</label>
+         <div className="space-y-8 relative z-10">
+            <div className="space-y-3">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block whitespace-nowrap">Actual Home Price</label>
                 <div className="relative">
                     <input
                         type="text"
                         inputMode="numeric"
                         value={data.homePrice}
                         onChange={(e) => update('homePrice', e.target.value)}
-                        className="premium-input bg-gray-50/50 text-4xl py-10"
+                        className="premium-input bg-gray-50/50 text-3xl py-8"
                         placeholder="0"
                     />
-                    <div className="absolute right-8 top-1/2 -translate-y-1/2 text-xl font-black text-gray-200">만원</div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-200">만원</div>
                 </div>
                 {renderMoney(data.homePrice) && (
-                    <motion.p initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="text-lg text-[var(--primary)] font-black text-right mt-2">
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-[var(--primary)] font-black text-right mt-1">
                         {renderMoney(data.homePrice)}
                     </motion.p>
                 )}
             </div>
 
-            <div className="space-y-4">
-                <label className="input-label text-gray-400 uppercase tracking-widest text-[10px]">KB Market Price</label>
+            <div className="space-y-3">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block whitespace-nowrap">KB Market Price</label>
                 <div className="relative">
                     <input
                         type="text"
                         inputMode="numeric"
                         value={data.kbPrice}
                         onChange={(e) => update('kbPrice', e.target.value)}
-                        className="premium-input bg-gray-50/50 text-4xl py-10"
+                        className="premium-input bg-gray-50/50 text-3xl py-8"
                         placeholder="0"
                     />
-                    <div className="absolute right-8 top-1/2 -translate-y-1/2 text-xl font-black text-gray-200">만원</div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-200">만원</div>
                 </div>
                 {renderMoney(data.kbPrice) && (
-                    <motion.p initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="text-lg text-[var(--primary)] font-black text-right mt-2">
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-[var(--primary)] font-black text-right mt-1">
                         {renderMoney(data.kbPrice)}
                     </motion.p>
                 )}
-                <div className="bg-[var(--secondary)]/5 p-4 rounded-2xl flex gap-3 mt-4 items-center">
-                    <Zap className="w-4 h-4 text-[var(--primary)] shrink-0" />
-                    <p className="text-[10px] text-[var(--secondary)] font-black leading-tight opacity-70">KB시세는 대출 한도 실무 판정의 직결되는 핵심 기준입니다.</p>
-                </div>
             </div>
          </div>
       </div>
 
-      {/* 2. Physical Specs - Massive Dimension Input */}
-      <div className="p-12 rounded-[4rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100">
-        <label className="input-label flex items-center gap-3 mb-8">
-            <Maximize className="w-5 h-5 text-[var(--primary)]" /> 전용면적 상세 정보
+      {/* 2. Physical Specs - Dimension Input */}
+      <div className="p-10 rounded-[3rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100">
+        <label className="input-label flex items-center gap-3 mb-6 whitespace-nowrap">
+            <Maximize className="w-4 h-4 text-[var(--primary)]" /> 전용면적 상세 정보
         </label>
         <div className="relative">
             <input
@@ -107,48 +103,48 @@ export default function HousingInput({ data, onChange }: Props) {
                 inputMode="numeric"
                 value={data.exclusiveArea}
                 onChange={(e) => update('exclusiveArea', e.target.value)}
-                className="premium-input text-6xl font-black py-16 px-12 h-auto text-center"
+                className="premium-input text-5xl font-black py-12 px-6 h-auto text-center"
                 placeholder="00"
             />
-            <div className="absolute right-12 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-100 tracking-widest">㎡ UNIT</div>
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-100 tracking-tighter opacity-50">㎡ UNIT</div>
         </div>
         {renderArea(data.exclusiveArea) && (
           <motion.p 
-            initial={{ opacity: 0, scale: 0.9 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            className="mt-8 text-2xl text-[var(--primary)] font-black text-center tracking-tighter"
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="mt-4 text-xl text-[var(--primary)] font-black text-center tracking-tighter"
           >
             {renderArea(data.exclusiveArea)}
           </motion.p>
         )}
       </div>
 
-      {/* 3. Regions & Regulation (Apple Pro Tiles) */}
-      <div className="space-y-10">
-        <label className="text-2xl font-black tracking-tighter text-center block mb-10">지역 기반 규제 설정</label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* 3. Regions & Regulation (Stabilized Pro Tiles) */}
+      <div className="space-y-6">
+        <label className="text-lg font-black tracking-tighter text-center block mb-6 whitespace-nowrap">지역 기반 규제 설정</label>
+        <div className="grid grid-cols-1 gap-4">
           {[
-            { key: 'isCapitalArea', label: '수도권 여부', icon: MapPin, desc: '서울, 경기, 인천 소재의 주택인 경우 체크하십시오.' },
-            { key: 'isRegulatedArea', label: '규제지역 여부', icon: ShieldCheck, desc: '투기과열지구 또는 조정대상지역 등 금융 규제가 적용됩니다.' },
+            { key: 'isCapitalArea', label: '수도권 여부', icon: MapPin, desc: '서울, 경기, 인천 소재 주택' },
+            { key: 'isRegulatedArea', label: '규제지역 여부', icon: ShieldCheck, desc: '투기과열지구 또는 조정대상지역' },
           ].map((item) => (
             <button
                key={item.key}
                onClick={() => update(item.key as keyof PropertyInput, !data[item.key as keyof PropertyInput])}
-               className={`pro-tile p-12 items-start text-left gap-8 ${
+               className={`pro-tile p-6 flex-row items-center text-left gap-6 h-auto ${
                  data[item.key as keyof PropertyInput]
-                   ? 'bg-[var(--secondary)] border-[var(--secondary)] text-white shadow-2xl scale-[1.03]'
-                   : 'bg-white border-gray-100 hover:border-gray-200 group'
+                   ? 'pro-tile-active scale-[1.01]'
+                   : 'pro-tile-inactive'
                }`}
             >
-                <div className={`p-6 rounded-[2rem] transition-colors ${data[item.key as keyof PropertyInput] ? 'bg-white/10' : 'bg-gray-50 group-hover:bg-[var(--accent)]'}`}>
-                    <item.icon className={`w-10 h-10 ${data[item.key as keyof PropertyInput] ? 'text-[var(--primary)]' : 'text-gray-200 group-hover:text-[var(--primary)]'}`} />
+                <div className={`p-4 rounded-2xl shrink-0 ${data[item.key as keyof PropertyInput] ? 'bg-white/10' : 'bg-gray-50'}`}>
+                    <item.icon className={`w-8 h-8 ${data[item.key as keyof PropertyInput] ? 'text-[var(--primary)]' : 'text-gray-200'}`} />
                 </div>
-                <div className="space-y-3">
-                    <span className="text-3xl font-black tracking-tighter block">{item.label}</span>
-                    <p className={`text-sm font-bold opacity-40 leading-relaxed ${data[item.key as keyof PropertyInput] ? 'text-white' : 'text-gray-400'}`}>{item.desc}</p>
-                </div>
-                <div className={`absolute top-10 right-10 w-8 h-8 rounded-full border-4 flex items-center justify-center transition-all ${data[item.key as keyof PropertyInput] ? 'bg-white text-[var(--secondary)] border-white scale-125' : 'border-gray-100 text-gray-100'}`}>
-                    {data[item.key as keyof PropertyInput] && <div className="w-2 h-2 bg-[var(--primary)] rounded-full" />}
+                <div className="flex-1 min-w-0">
+                    <span className="text-xl font-black tracking-tighter flex items-center gap-2 whitespace-nowrap overflow-hidden text-ellipsis">
+                        {item.label}
+                        {data[item.key as keyof PropertyInput] && <div className="w-2 h-2 bg-[var(--primary)] rounded-full shrink-0" />}
+                    </span>
+                    <p className={`text-[10px] font-bold opacity-60 truncate ${data[item.key as keyof PropertyInput] ? 'text-white' : 'text-gray-400'}`}>{item.desc}</p>
                 </div>
             </button>
           ))}
