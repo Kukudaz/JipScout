@@ -205,49 +205,49 @@ export default function FinancialInput({ data, onChange }: Props) {
       <div className="bg-white rounded-[3rem] p-10 md:p-14 shadow-[var(--apple-shadow)] border border-gray-100">
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
             <div className="space-y-4">
-                <label className="input-label flex items-center gap-2 whitespace-nowrap">
-                    <Activity className="w-4 h-4 text-[var(--primary)]" /> 만 나이
+                <label className="input-label flex items-center gap-2 whitespace-nowrap text-lg">
+                    <Activity className="w-5 h-5 text-[var(--primary)]" /> 만 나이
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                     <input
                         type="text"
                         inputMode="numeric"
                         value={data.age}
                         onChange={(e) => update('age', e.target.value)}
-                        className="premium-input text-center text-4xl py-8 w-24"
+                        className="premium-input text-center text-4xl py-10 w-32"
                         placeholder="33"
                     />
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${data.isBirthdayPassed ? 'bg-[var(--primary)] border-[var(--primary)]' : 'border-gray-200'}`}>
-                            {data.isBirthdayPassed && <div className="w-1.5 h-1.5 bg-white rounded-sm" />}
+                    <label className="flex items-center gap-3 cursor-pointer group shrink-0">
+                        <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${data.isBirthdayPassed ? 'bg-[var(--primary)] border-[var(--primary)] shadow-md' : 'border-gray-200'}`}>
+                            {data.isBirthdayPassed && <div className="w-2 h-2 bg-white rounded-sm" />}
                         </div>
                         <input type="checkbox" checked={data.isBirthdayPassed} onChange={e => update('isBirthdayPassed', e.target.checked)} className="hidden" />
-                        <span className="text-[10px] font-black text-gray-300 group-hover:text-[var(--secondary)] whitespace-nowrap">생일 지남</span>
+                        <span className="text-xs font-black text-gray-300 group-hover:text-[var(--secondary)] whitespace-nowrap">생일 지남</span>
                     </label>
                 </div>
             </div>
 
             <div className="space-y-4">
-                <label className="input-label whitespace-nowrap">미성년 자녀 수</label>
-                <div className="flex items-center gap-6 py-4 justify-between bg-gray-50/50 px-6 rounded-2xl border border-gray-100">
-                   <button onClick={() => update('childrenCount', Math.max(0, parseInt(data.childrenCount || '0') - 1).toString())} className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center hover:scale-105 transition-all"><Minus className="w-4 h-4" /></button>
+                <label className="input-label whitespace-nowrap text-lg">미성년 자녀 수</label>
+                <div className="flex items-center gap-6 py-4 justify-between bg-gray-50/50 px-6 rounded-2xl border border-gray-100 h-[100px]">
+                   <button onClick={() => update('childrenCount', Math.max(0, parseInt(data.childrenCount || '0') - 1).toString())} className="w-12 h-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center hover:scale-105 transition-all"><Minus className="w-4 h-4" /></button>
                    <span className="text-4xl font-black text-[var(--secondary)]">{data.childrenCount || '0'}</span>
-                   <button onClick={() => update('childrenCount', (parseInt(data.childrenCount || '0') + 1).toString())} className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center hover:scale-105 transition-all"><Plus className="w-4 h-4" /></button>
+                   <button onClick={() => update('childrenCount', (parseInt(data.childrenCount || '0') + 1).toString())} className="w-12 h-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center hover:scale-105 transition-all"><Plus className="w-4 h-4" /></button>
                 </div>
             </div>
 
             <div className="md:col-span-2 space-y-4">
-                <label className="input-label whitespace-nowrap">자산 및 신용 리포트</label>
+                <label className="input-label whitespace-nowrap text-lg">자산 및 신용 리포트</label>
                 <div className="grid grid-cols-2 gap-4 text-left">
-                    <div className="bg-gray-50 px-6 py-5 rounded-2xl border border-gray-100">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">보유 현금</label>
-                        <input type="text" value={data.cash} onChange={e => update('cash', e.target.value)} className="w-full text-xl font-black bg-transparent outline-none" placeholder="0" />
-                        <span className="text-[8px] text-[var(--primary)] font-black uppercase opacity-60">KRW</span>
+                    <div className="bg-gray-50 px-6 py-6 rounded-2xl border border-gray-100">
+                        <label className="text-xs font-black uppercase text-gray-400 block mb-2">보유 현금</label>
+                        <input type="text" value={data.cash} onChange={e => update('cash', e.target.value)} className="w-full text-2xl font-black bg-transparent outline-none" placeholder="0" />
+                        {renderMoney(data.cash) && <p className="text-[10px] text-[var(--primary)] font-black mt-1">{renderMoney(data.cash)}</p>}
                     </div>
-                    <div className="bg-gray-50 px-6 py-5 rounded-2xl border border-gray-100">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">월 부채</label>
-                        <input type="text" value={data.existingDebtPayment} onChange={e => update('existingDebtPayment', e.target.value)} className="w-full text-xl font-black bg-transparent outline-none" placeholder="0" />
-                        <span className="text-[8px] text-gray-300 font-black uppercase opacity-60">Fixed</span>
+                    <div className="bg-gray-50 px-6 py-6 rounded-2xl border border-gray-100">
+                        <label className="text-xs font-black uppercase text-gray-400 block mb-2">월 부채</label>
+                        <input type="text" value={data.existingDebtPayment} onChange={e => update('existingDebtPayment', e.target.value)} className="w-full text-2xl font-black bg-transparent outline-none" placeholder="0" />
+                        {renderMoney(data.existingDebtPayment) && <p className="text-[10px] text-gray-300 font-black mt-1">{renderMoney(data.existingDebtPayment)}</p>}
                     </div>
                 </div>
             </div>

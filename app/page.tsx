@@ -178,51 +178,53 @@ export default function Home() {
                     </section>
                 </div>
 
-                {/* Property Sticky Module - Balanced Width */}
-                <div className="hidden xl:col-span-1 xl:block"></div> {/* Spacer */}
-                <div className="hidden xl:block xl:col-span-4 sticky top-40 h-fit">
-                    <div className="bg-white/60 backdrop-blur-3xl rounded-[4rem] p-10 md:p-14 shadow-[var(--apple-shadow)] border border-white/40 flex flex-col gap-12">
-                         <div className="space-y-10">
-                            <div className="flex items-center gap-4">
-                                <CheckCircle2 className="w-7 h-7 text-[var(--primary)]" />
-                                <h3 className="text-3xl font-black tracking-tighter leading-tight whitespace-nowrap overflow-visible">02 Property<br/>Intelligence</h3>
-                            </div>
-                            <HousingInput data={property} onChange={setProperty} />
+                {/* Property Module - Balanced Proximity */}
+                <div className="hidden xl:col-span-1 xl:block"></div>
+                <div className="xl:col-span-12 xl:col-span-4 h-fit">
+                    <div className="flex flex-col gap-8">
+                         <div className="flex items-center gap-4">
+                            <CheckCircle2 className="w-7 h-7 text-[var(--primary)]" />
+                            <h3 className="text-3xl font-black tracking-tighter leading-tight whitespace-nowrap overflow-visible">02 Property<br/>Intelligence</h3>
                          </div>
-
-                         <div className="pt-10 border-t-2 border-dashed border-gray-100 space-y-6">
-                            <button
-                                onClick={handleCalculate}
-                                className="w-full premium-button premium-button-primary py-8 text-2xl font-black shadow-[0_30px_60px_rgba(48,213,200,0.4)] whitespace-nowrap overflow-hidden text-ellipsis"
-                            >
-                                분석 리포트 생성
-                            </button>
-                            
-                            <AnimatePresence>
-                                {validationErrors.length > 0 && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="p-8 bg-rose-50 border border-rose-100 rounded-[2.5rem] text-rose-600 space-y-4"
-                                    >
-                                        <p className="text-base font-black">Missing Data:</p>
-                                        <ul className="text-xs space-y-1 opacity-80 font-black">
-                                            {validationErrors.map((err, i) => <li key={i} className="flex gap-2 text-left"><span>•</span> {err}</li>)}
-                                        </ul>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                         <div className="bg-white/60 backdrop-blur-3xl rounded-[4rem] p-10 md:p-14 shadow-[var(--apple-shadow)] border border-white/40">
+                            <HousingInput data={property} onChange={setProperty} />
                          </div>
                     </div>
                 </div>
             </div>
             
-            {/* Mobile Property Module */}
-            <div className="xl:hidden mt-24">
-                 <div className="bg-white/60 backdrop-blur-3xl rounded-[3rem] p-10 shadow-[var(--apple-shadow)] border border-white/40 space-y-10">
-                    <h3 className="text-3xl font-black tracking-tighter">02 Property Info</h3>
-                    <HousingInput data={property} onChange={setProperty} />
-                    <button onClick={handleCalculate} className="w-full premium-button premium-button-primary py-8 text-2xl font-black">분석 리포트 생성</button>
+            {/* Logic Completion Button - Logical End of Flow */}
+            <div className="mt-32 pt-32 border-t-2 border-dashed border-gray-100 flex flex-col items-center gap-12 text-center">
+                 <div className="space-y-4">
+                    <h3 className="text-4xl md:text-6xl font-black tracking-tighter text-[var(--secondary)]">모든 준비가 끝났습니다.</h3>
+                    <p className="text-xl text-[var(--text-sub)] font-black">당신의 데이터를 기반으로 정밀 분석 리포트를 생성합니다.</p>
+                 </div>
+                 
+                 <div className="w-full max-w-2xl">
+                    <button
+                        onClick={handleCalculate}
+                        className="w-full premium-button premium-button-primary py-10 text-3xl font-black shadow-[0_40px_80px_rgba(48,213,200,0.4)] relative group overflow-hidden"
+                    >
+                        <span className="relative z-10">분석 리포트 생성하기</span>
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                    </button>
+                    
+                    <AnimatePresence>
+                        {validationErrors.length > 0 && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mt-8 p-10 bg-rose-50 border border-rose-100 rounded-[3rem] text-rose-600 text-left"
+                            >
+                                <p className="text-lg font-black mb-4 flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-rose-600 rounded-full" /> 누락된 정보를 확인해주세요:
+                                </p>
+                                <ul className="text-sm space-y-2 font-black opacity-80 grid grid-cols-1 md:grid-cols-2">
+                                    {validationErrors.map((err, i) => <li key={i} className="flex gap-2"><span>•</span> {err}</li>)}
+                                </ul>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                  </div>
             </div>
         </div>

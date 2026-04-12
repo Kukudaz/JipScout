@@ -37,12 +37,12 @@ export default function HousingInput({ data, onChange }: Props) {
   return (
     <div className="space-y-12">
       {/* 1. Price Context - Stabilized Cards */}
-      <div className="space-y-8 p-10 rounded-[3rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100 relative overflow-hidden">
+      <div className="space-y-6 p-8 md:p-10 rounded-[3rem] bg-white shadow-[var(--apple-shadow)] border border-gray-100 relative overflow-hidden">
          <div className="absolute top-0 right-0 p-6 opacity-5">
             <Landmark className="w-24 h-24 text-[var(--secondary)]" />
          </div>
          
-         <div className="flex items-center gap-3 mb-8 relative z-10">
+         <div className="flex items-center gap-3 mb-4 relative z-10">
             <div className="w-10 h-10 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] shadow-lg">
                 <Building2 className="w-5 h-5" />
             </div>
@@ -58,7 +58,7 @@ export default function HousingInput({ data, onChange }: Props) {
                         inputMode="numeric"
                         value={data.homePrice}
                         onChange={(e) => update('homePrice', e.target.value)}
-                        className="premium-input bg-gray-50/50 text-3xl py-8"
+                        className="premium-input bg-gray-50/50 text-3xl py-8 pr-20"
                         placeholder="0"
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-200">만원</div>
@@ -78,7 +78,7 @@ export default function HousingInput({ data, onChange }: Props) {
                         inputMode="numeric"
                         value={data.kbPrice}
                         onChange={(e) => update('kbPrice', e.target.value)}
-                        className="premium-input bg-gray-50/50 text-3xl py-8"
+                        className="premium-input bg-gray-50/50 text-3xl py-8 pr-20"
                         placeholder="0"
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-200">만원</div>
@@ -104,9 +104,10 @@ export default function HousingInput({ data, onChange }: Props) {
                 value={data.exclusiveArea}
                 onChange={(e) => update('exclusiveArea', e.target.value)}
                 className="premium-input text-5xl font-black py-12 px-6 h-auto text-center"
-                placeholder="00"
+                placeholder="84"
             />
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-lg font-black text-gray-100 tracking-tighter opacity-50">㎡ UNIT</div>
+            {/* Fix: Moved UNIT text further to avoid overlap */}
+            <div className="absolute right-8 top-1/2 -translate-y-1/2 text-lg font-black text-gray-100 tracking-tighter opacity-30 select-none pointer-events-none">㎡ UNIT</div>
         </div>
         {renderArea(data.exclusiveArea) && (
           <motion.p 
@@ -120,8 +121,8 @@ export default function HousingInput({ data, onChange }: Props) {
       </div>
 
       {/* 3. Regions & Regulation (Stabilized Pro Tiles) */}
-      <div className="space-y-6">
-        <label className="text-lg font-black tracking-tighter text-center block mb-6 whitespace-nowrap">지역 기반 규제 설정</label>
+      <div className="space-y-4">
+        <label className="text-lg font-black tracking-tighter text-center block mb-4 whitespace-nowrap">지역 기반 규제 설정</label>
         <div className="grid grid-cols-1 gap-4">
           {[
             { key: 'isCapitalArea', label: '수도권 여부', icon: MapPin, desc: '서울, 경기, 인천 소재 주택' },
