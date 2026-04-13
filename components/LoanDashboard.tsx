@@ -7,6 +7,7 @@ import { calculateLoanSummary } from '@/lib/calculator';
 import { UserProfileInput, PropertyInput, MarriageStatus, JobType } from '@/types';
 import { MARKET_RATE_CONFIG, BANK_MORTGAGE_RULES } from '@/lib/policies/loanRules';
 import { formatCurrencyKorean } from '@/lib/format';
+import SaveButton from './SaveButton';
 import { 
   Calculator, TrendingUp, PieChart, Percent, ChevronRight,
   Briefcase, Store, Cpu, User, Heart, Users, Home, Key, Baby,
@@ -263,6 +264,10 @@ export default function LoanDashboard() {
             <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-2">총 구매 가능 금액</p>
             <span className="text-4xl font-black tracking-tighter">{result.totalBuyingPower.toLocaleString()}만원</span>
             <p className="text-white/60 text-xs font-bold mt-2">대출 {loanAmount.toLocaleString()}만원 + 현금 {result.userCash.toLocaleString()}만원</p>
+          </div>
+
+          <div className="pt-2">
+            <SaveButton profile={profile} property={property} result={result} />
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import LoanDashboard from '@/components/LoanDashboard';
 import { Reveal } from '@/components/ui/Layout';
 import { ScrollLitText } from '@/components/ui/ScrollLitText';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import AuthButton from '@/components/AuthButton';
 
 export default function Home() {
   const checkerRef = useRef<HTMLDivElement>(null);
@@ -36,12 +37,15 @@ export default function Home() {
             <a href="#" className="hover:text-[var(--secondary)] transition-colors">Architecture</a>
             <a href="#" className="hover:text-[var(--secondary)] transition-colors">Global Intelligence</a>
           </div>
-          <button 
-                onClick={() => checkerRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-[var(--secondary)] text-white text-[10px] font-black px-10 py-3.5 rounded-full hover:shadow-[0_20px_40px_rgba(0,49,83,0.3)] hover:scale-105 active:scale-95 transition-all"
-          >
-            Start Analyzing
-          </button>
+          <div className="flex items-center gap-4">
+            <button 
+                  onClick={() => checkerRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                  className="hidden sm:block bg-black text-white text-[10px] font-black px-8 py-3.5 rounded-full hover:bg-gray-800 transition-all"
+            >
+              Start Analyzing
+            </button>
+            <AuthButton />
+          </div>
         </div>
       </nav>
 
