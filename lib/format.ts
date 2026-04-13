@@ -26,3 +26,29 @@ export const formatCurrencyKorean = (amount: number): string => {
     return `${chun.toLocaleString()}만원`;
   }
 };
+
+export function formatManwonToKoreanPreview(value: number): string {
+  const safe = Math.max(0, Math.floor(value || 0));
+  const eok = Math.floor(safe / 10000);
+  const manwon = safe % 10000;
+
+  if (safe < 10000) return `${safe.toLocaleString()}만원`;
+  return `${eok.toLocaleString()}억 ${manwon.toLocaleString()}만원`;
+}
+
+export function formatManwonRaw(value: number): string {
+  const safe = Math.max(0, Math.floor(value || 0));
+  return `${safe.toLocaleString()}만원`;
+}
+
+export function sqmToPyeong(value: number): number {
+  return Number((value / 3.305785).toFixed(1));
+}
+
+export function formatAreaPreview(value: number): { sqm: string; pyeong: string } {
+  const safe = Math.max(0, Number(value || 0));
+  return {
+    sqm: `${safe}㎡`,
+    pyeong: `약 ${sqmToPyeong(safe)}평`,
+  };
+}

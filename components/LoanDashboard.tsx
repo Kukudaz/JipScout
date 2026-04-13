@@ -37,18 +37,40 @@ function calcMonthlyPayment(loanManwon: number, annualRate: number, years: numbe
 
 export default function LoanDashboard() {
   const [profile, setProfile] = useState<UserProfileInput>({
+    birthDate: '1992-06-01',
+    marriageStatus: 'single',
+    marriageDate: '',
     myIncome: '6000', spouseIncome: '0', cash: '10000', existingDebtPayment: '0',
-    age: '33', isBirthdayPassed: false, jobType: 'employee', spouseJobType: 'employee',
-    marriageStatus: 'single', isFirstTimeBuyer: true, isHomeless: true,
-    newbornWithin2Years: false, childrenCount: '0', wantsGraduatedRepayment: false,
+    jobType: 'employee', spouseJobType: 'employee',
+    childrenCount: '0',
+    newbornWithin2Years: false, newbornDate: '',
+    isHeadOfHousehold: true,
+    housingStatus: 'homeless',
+    hasHousingRight: false,
+    netAssets: '10000',
+    creditScore: '900', kcbScore: '900', niceScore: '900',
+    showDetailedCreditScore: false,
+    hasExistingMortgage: false, existingMortgageBalance: '0',
+    hasJeonseLoan: false, jeonseLoanBalance: '0',
+    hasFundLoan: false, fundLoanBalance: '0',
+    creditLoanBalance: '0',
+    isFirstTimeBuyer: true,
+    isHomeless: true,
+    age: '33', isBirthdayPassed: false,
+    wantsGraduatedRepayment: false,
     hasExistingFirstHomeLoan: false, hasUsedFirstTimeLoanBefore: false,
-    existingFirstHomeLoanBalance: '0', wantsNewbornRefinance: false,
-    niceScore: '900', kcbScore: '900',
+    existingFirstHomeLoanBalance: '0',
+    wantsNewbornRefinance: false,
   });
 
   const [property, setProperty] = useState<PropertyInput>({
     homePrice: '50000', kbPrice: '50000', exclusiveArea: '84',
+    housingType: 'apartment',
+    region: '', district: '',
     isCapitalArea: true, isRegulatedArea: false,
+    transactionType: 'existing',
+    contractDate: '', contractDepositDate: '', recruitAnnouncementDate: '',
+    loanTermYears: '30', repaymentMethod: 'equalPrincipalInterest', rateType: 'fixed',
   });
 
   const result = useMemo(() => calculateLoanSummary(profile, property), [profile, property]);

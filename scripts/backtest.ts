@@ -1,10 +1,43 @@
 import { calculateLoanSummary } from '../lib/calculator';
 import { UserProfileInput, PropertyInput } from '../types';
 
+const defaultUserExtras: Partial<UserProfileInput> = {
+  birthDate: '1992-01-01',
+  marriageDate: '',
+  newbornDate: '',
+  isHeadOfHousehold: true,
+  housingStatus: 'homeless',
+  hasHousingRight: false,
+  netAssets: '10000',
+  creditScore: '900',
+  showDetailedCreditScore: false,
+  hasExistingMortgage: false,
+  existingMortgageBalance: '0',
+  hasJeonseLoan: false,
+  jeonseLoanBalance: '0',
+  hasFundLoan: false,
+  fundLoanBalance: '0',
+  creditLoanBalance: '0',
+};
+
+const defaultPropertyExtras: Partial<PropertyInput> = {
+  housingType: 'apartment',
+  region: '',
+  district: '',
+  transactionType: 'existing',
+  contractDate: '',
+  contractDepositDate: '',
+  recruitAnnouncementDate: '',
+  loanTermYears: '30',
+  repaymentMethod: 'equalPrincipalInterest',
+  rateType: 'fixed',
+};
+
 const cases: { name: string; user: UserProfileInput; property: PropertyInput }[] = [
   {
     name: 'Case 1: Newborn Miracle (Target: Newborn Special)',
     user: {
+      ...defaultUserExtras,
       myIncome: '8000',
       spouseIncome: '7000',
       cash: '20000',
@@ -25,18 +58,20 @@ const cases: { name: string; user: UserProfileInput; property: PropertyInput }[]
       wantsNewbornRefinance: false,
       niceScore: '900',
       kcbScore: '900',
-    },
+    } as UserProfileInput,
     property: {
+      ...defaultPropertyExtras,
       homePrice: '80000',
       kbPrice: '82000',
       exclusiveArea: '84',
       isCapitalArea: true,
       isRegulatedArea: false,
-    },
+    } as PropertyInput,
   },
   {
     name: 'Case 2: First-Time Buyer Non-Capital (Target: Didimdol 80% LTV)',
     user: {
+      ...defaultUserExtras,
       myIncome: '5000',
       spouseIncome: '0',
       cash: '8000',
@@ -57,18 +92,20 @@ const cases: { name: string; user: UserProfileInput; property: PropertyInput }[]
       wantsNewbornRefinance: false,
       niceScore: '850',
       kcbScore: '850',
-    },
+    } as UserProfileInput,
     property: {
+      ...defaultPropertyExtras,
       homePrice: '40000',
       kbPrice: '0',
       exclusiveArea: '59',
       isCapitalArea: false,
       isRegulatedArea: false,
-    },
+    } as PropertyInput,
   },
   {
     name: 'Case 3: Upper Middle Class (Target: Bank Mortgage, Stress DSR)',
     user: {
+      ...defaultUserExtras,
       myIncome: '12000',
       spouseIncome: '10000',
       cash: '40000',
@@ -89,22 +126,24 @@ const cases: { name: string; user: UserProfileInput; property: PropertyInput }[]
       wantsNewbornRefinance: false,
       niceScore: '950',
       kcbScore: '950',
-    },
+    } as UserProfileInput,
     property: {
+      ...defaultPropertyExtras,
       homePrice: '120000',
       kbPrice: '125000',
       exclusiveArea: '101',
       isCapitalArea: true,
       isRegulatedArea: false,
-    },
+    } as PropertyInput,
   },
   {
     name: 'Case 4: High Debt Edge (Target: DSR Limit Check)',
     user: {
+      ...defaultUserExtras,
       myIncome: '4000',
       spouseIncome: '0',
       cash: '10000',
-      existingDebtPayment: '180', // High monthly debt
+      existingDebtPayment: '180',
       age: '30',
       isBirthdayPassed: true,
       jobType: 'employee',
@@ -121,18 +160,20 @@ const cases: { name: string; user: UserProfileInput; property: PropertyInput }[]
       wantsNewbornRefinance: false,
       niceScore: '800',
       kcbScore: '800',
-    },
+    } as UserProfileInput,
     property: {
+      ...defaultPropertyExtras,
       homePrice: '50000',
       kbPrice: '50000',
       exclusiveArea: '59',
       isCapitalArea: true,
       isRegulatedArea: false,
-    },
+    } as PropertyInput,
   },
   {
     name: 'Case 5: Age Restriction check (Age 42, Graduated Repayment)',
     user: {
+      ...defaultUserExtras,
       myIncome: '6000',
       spouseIncome: '0',
       cash: '15000',
@@ -153,14 +194,15 @@ const cases: { name: string; user: UserProfileInput; property: PropertyInput }[]
       wantsNewbornRefinance: false,
       niceScore: '900',
       kcbScore: '900',
-    },
+    } as UserProfileInput,
     property: {
+      ...defaultPropertyExtras,
       homePrice: '60000',
       kbPrice: '60000',
       exclusiveArea: '84',
       isCapitalArea: true,
       isRegulatedArea: false,
-    },
+    } as PropertyInput,
   },
 ];
 
