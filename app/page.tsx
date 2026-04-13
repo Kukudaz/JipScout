@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
 
           <p className="text-white/60 text-base sm:text-lg md:text-2xl max-w-3xl mx-auto font-black tracking-tight leading-snug px-4">
-            단순한 계산기가 아닙니다. 당신의 인생 데이터를<br className="hidden sm:block" />
+            단순한 계산기가 아닙니다. 당신의 인생 데이터를 <br className="hidden sm:block" />
             예술적인 숫자로 변형하는 정밀 알고리즘입니다.
           </p>
 
