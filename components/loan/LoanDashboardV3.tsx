@@ -9,6 +9,7 @@ import { SmartNumberField } from '@/components/ui/SmartNumberField';
 import { SmartAreaField } from '@/components/ui/SmartAreaField';
 import { TooltipHelp } from '@/components/ui/TooltipHelp';
 import SaveButton from '@/components/SaveButton';
+import AuthButton from '@/components/AuthButton';
 import {
   UserProfileInput, PropertyInput,
   MarriageStatus, JobType, HousingStatus,
@@ -258,27 +259,59 @@ export default function LoanDashboardV3() {
   const isMarried = profile.marriageStatus !== 'single';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-24 md:pb-0">
       {/* Top Nav */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-3xl border-b border-gray-100/70">
-        <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-gray-700 transition-colors">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <Link href="/" className="hidden sm:flex items-center gap-2 text-gray-400 hover:text-gray-700 transition-colors">
               <ArrowLeft className="w-4 h-4" />
-              <span className="text-xs font-black uppercase tracking-widest">Home</span>
             </Link>
-            <div className="w-px h-4 bg-gray-200" />
+            <div className="hidden sm:block w-px h-4 bg-gray-200" />
             <div className="flex items-center gap-2">
               <Calculator className="w-4 h-4 text-[var(--primary)]" />
-              <span className="text-sm font-black text-[var(--secondary)] tracking-tight">Loan Analysis Engine</span>
-              <div className="px-2 py-0.5 bg-[var(--accent)] rounded-md text-[9px] font-black text-[var(--primary)] uppercase tracking-widest">v3.0</div>
+              <span className="text-sm font-black text-[var(--secondary)] tracking-tight hidden xs:block">JipScout</span>
             </div>
           </div>
-          <p className="hidden md:block text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            이 결과는 참고용 예상치입니다 · 실제 심사는 금융기관 기준에 따라 달라집니다
-          </p>
+
+          {/* Real-time Summary in Nav */}
+          <div className="flex-1 flex items-center justify-center gap-4 md:gap-8 overflow-hidden">
+            <div className="flex flex-col items-center">
+              <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">예상 한도</span>
+              <span className="text-xs md:text-sm font-black text-[var(--primary)] tracking-tight truncate">
+                {formatManwonToKoreanPreview(loanAmount)}
+              </span>
+            </div>
+            <div className="h-4 w-px bg-gray-100 hidden md:block" />
+            <div className="flex flex-col items-center">
+              <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">예상 DSR</span>
+              <span className={`text-xs md:text-sm font-black tracking-tight ${dsr < 40 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                {dsr.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+
+          <div className="shrink-0">
+            <AuthButton />
+          </div>
         </div>
       </nav>
+
+      {/* Sticky Bottom Summary (Mobile Only) */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
+        <div className="bg-[var(--secondary)] text-white p-4 rounded-3xl shadow-2xl shadow-blue-900/40 flex items-center justify-between border border-white/10 backdrop-blur-xl">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black opacity-50 uppercase tracking-widest">총 구매 가능액</span>
+            <span className="text-xl font-black tracking-tight">{formatManwonToKoreanPreview(result.totalBuyingPower)}</span>
+          </div>
+          <button
+            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+            className="bg-[var(--primary)] px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg active:scale-95 transition-transform"
+          >
+            상세결과
+          </button>
+        </div>
+      </div>
 
       {/* Body */}
       <div className="pt-20 max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 py-8">
@@ -321,7 +354,7 @@ export default function LoanDashboardV3() {
               <AnimatePresence>
                 {isMarried && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-1 mt-4">
                       {profile.marriageStatus === 'newlywed' ? '결혼 예정일' : '혼인일'}
                     </label>
                     <input
@@ -335,7 +368,7 @@ export default function LoanDashboardV3() {
               </AnimatePresence>
 
               {/* 세대주 / 생애최초 */}
-              <div className="space-y-4">
+              <div className="space-y-4 pt-4">
                 <ToggleRow
                   label="세대주 여부"
                   value={profile.isHeadOfHousehold}
@@ -489,50 +522,42 @@ export default function LoanDashboardV3() {
 
               {/* 순자산 */}
               <SmartNumberField
-                label="순자산 (본인+배우자 합산)"
+                label="순자산 (합산)"
                 value={Number(profile.netAssets)}
                 min={0} max={1000000} step={500}
                 unit="만원"
-                tooltip="현금, 예금, 주식, 자동차, 부동산 등 자산에서 부채(각종 대출)를 뺀 금액입니다. 신생아 특례 등 자산 기준에 사용됩니다."
+                tooltip="현금, 예금, 주식, 자동차, 부동산 등 자산에서 부채(각종 대출)를 뺀 금액입니다."
                 onChange={(v) => up('netAssets', v)}
               />
 
               {/* 신용점수 */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">신용점수</label>
-                    <TooltipHelp text="KCB(나이스) 또는 NICE 기준 신용점수입니다. 점수가 낮으면 일부 정책 대출 조건이 달라질 수 있습니다." />
-                  </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest">신용점수</label>
                   <button
                     onClick={() => up('showDetailedCreditScore', !profile.showDetailedCreditScore)}
-                    className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest hover:underline"
+                    className="text-[10px] font-black text-[var(--primary)] tracking-widest hover:underline"
                   >
-                    {profile.showDetailedCreditScore ? '간단 입력' : '상세 입력 (KCB/NICE)'}
+                    상세보기
                   </button>
                 </div>
                 <AnimatePresence mode="wait">
                   {profile.showDetailedCreditScore ? (
-                    <motion.div key="detail" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-2 gap-3">
+                    <motion.div key="det" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[10px] font-black text-gray-400 mb-1 block">KCB 점수</label>
-                        <input type="number" min={0} max={1000} value={profile.kcbScore}
-                          onChange={(e) => up('kcbScore', e.target.value)}
-                          className="w-full px-3 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+                        <label className="text-[10px] text-gray-400 mb-1 block">KCB</label>
+                        <input type="number" value={profile.kcbScore} onChange={(e) => up('kcbScore', e.target.value)}
+                         className="w-full px-4 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:ring-2 focus:ring-[var(--primary)] outline-none" />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black text-gray-400 mb-1 block">NICE 점수</label>
-                        <input type="number" min={0} max={1000} value={profile.niceScore}
-                          onChange={(e) => up('niceScore', e.target.value)}
-                          className="w-full px-3 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
+                        <label className="text-[10px] text-gray-400 mb-1 block">NICE</label>
+                        <input type="number" value={profile.niceScore} onChange={(e) => up('niceScore', e.target.value)}
+                         className="w-full px-4 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:ring-2 focus:ring-[var(--primary)] outline-none" />
                       </div>
                     </motion.div>
                   ) : (
-                    <motion.div key="simple" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      <input type="number" min={0} max={1000} value={profile.creditScore}
-                        onChange={(e) => { up('creditScore', e.target.value); up('kcbScore', e.target.value); up('niceScore', e.target.value); }}
-                        className="w-full px-4 py-3 border-2 border-gray-100 rounded-2xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all" />
-                    </motion.div>
+                    <input type="number" value={profile.creditScore} onChange={(e) => { up('creditScore', e.target.value); up('kcbScore', e.target.value); up('niceScore', e.target.value); }}
+                     className="w-full px-4 py-3 border-2 border-gray-100 rounded-2xl text-sm font-black focus:ring-2 focus:ring-[var(--primary)] outline-none" />
                   )}
                 </AnimatePresence>
               </div>
@@ -545,7 +570,7 @@ export default function LoanDashboardV3() {
                 value={Number(profile.existingDebtPayment)}
                 min={0} max={5000} step={10}
                 unit="만원"
-                tooltip="현재 매달 납부 중인 모든 대출 상환액의 합계입니다. (카드론, 자동차 할부, 마이너스 통장 이자 포함)"
+                tooltip="매달 납부 중인 모든 대출 상환액 합계 (차 할부, 카드론 등)"
                 onChange={(v) => up('existingDebtPayment', v)}
               />
               <div className="h-px bg-gray-100" />
@@ -555,7 +580,6 @@ export default function LoanDashboardV3() {
                 balance={profile.existingMortgageBalance}
                 onToggle={() => up('hasExistingMortgage', !profile.hasExistingMortgage)}
                 onBalance={(v) => up('existingMortgageBalance', v)}
-                tooltip="현재 주택담보대출을 보유 중이면 활성화하세요. 1주택자 갈아타기 판정에 사용됩니다."
               />
               <LoanCheckRow
                 label="전세대출 보유"
@@ -570,200 +594,100 @@ export default function LoanDashboardV3() {
                 balance={profile.fundLoanBalance}
                 onToggle={() => up('hasFundLoan', !profile.hasFundLoan)}
                 onBalance={(v) => up('fundLoanBalance', v)}
-                tooltip="디딤돌·보금자리론 등 주택도시기금 대출을 이전에 받은 적이 있거나 현재 있다면 활성화하세요."
               />
               <SmartNumberField
                 label="신용대출 잔액"
                 value={Number(profile.creditLoanBalance)}
                 min={0} max={100000} step={100}
                 unit="만원"
-                tooltip="신용카드론, 마이너스통장, 개인신용대출 등의 잔액 합계입니다."
                 onChange={(v) => up('creditLoanBalance', v)}
               />
             </SectionCard>
 
             {/* ④ 주택 정보 */}
             <SectionCard title="주택 정보" icon={Building2} open={sections.house} onToggle={() => toggleSection('house')}>
-              {/* 거래 유형 */}
               <div>
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">거래 유형</label>
                 <RadioGroup
-                  options={[
-                    { value: 'existing', label: '기존 매매' },
-                    { value: 'newBuild', label: '분양' },
-                    { value: 'right', label: '입주권' },
-                  ]}
+                  options={[{ value: 'existing', label: '기존 매매' }, { value: 'newBuild', label: '분양' }, { value: 'right', label: '입주권' }]}
                   value={property.transactionType}
                   onChange={(v) => pp('transactionType', v as TransactionType)}
                 />
               </div>
 
-              {/* 주택 가격 */}
               <SmartNumberField
                 label="희망 주택 가격"
                 value={Number(property.homePrice)}
                 min={0} max={1000000} step={1000}
                 unit="만원"
-                tooltip="매수 희망 금액입니다. 실제 계약가 또는 시세 기준으로 입력하세요."
                 onChange={(v) => { pp('homePrice', v); pp('kbPrice', v); }}
               />
 
-              {/* 주택 유형 */}
               <div>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest">주택 유형</label>
-                  <TooltipHelp text="오피스텔은 업무용/주거용 구분에 따라 대출 조건이 크게 다릅니다. 주거용 오피스텔이어야 일부 정책 대출 가능합니다." />
-                </div>
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">주택 유형</label>
                 <RadioGroup
                   options={[
                     { value: 'apartment', label: '아파트' },
-                    { value: 'villa', label: '연립' },
-                    { value: 'multiplex', label: '다세대' },
+                    { value: 'villa', label: '연립/다세대' },
                     { value: 'detached', label: '단독/다가구' },
                     { value: 'officetel', label: '오피스텔' },
-                    { value: 'other', label: '기타' },
                   ]}
                   value={property.housingType}
                   onChange={(v) => pp('housingType', v as HousingType)}
                 />
               </div>
 
-              {/* 전용면적 */}
               <SmartAreaField
                 label="전용면적"
                 value={Number(property.exclusiveArea)}
                 min={15} max={300} step={1}
                 unit="㎡"
-                tooltip="등기와 대출 심사에 쓰이는 전용면적입니다. 85㎡ 이하가 정책 대출의 기준이 됩니다."
                 onChange={(v) => pp('exclusiveArea', v)}
               />
 
-              {/* 지역 */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">시/도</label>
-                  <input
-                    type="text" placeholder="서울특별시" value={property.region}
-                    onChange={(e) => pp('region', e.target.value)}
-                    className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                  />
+                  <label className="text-[10px] text-gray-400 mb-1 block">시/도</label>
+                  <input type="text" value={property.region} onChange={(e) => pp('region', e.target.value)}
+                   className="w-full px-4 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:ring-2 focus:ring-[var(--primary)] outline-none" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">시/군/구</label>
-                  <input
-                    type="text" placeholder="마포구" value={property.district}
-                    onChange={(e) => pp('district', e.target.value)}
-                    className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                  />
+                  <label className="text-[10px] text-gray-400 mb-1 block">시/군/구</label>
+                  <input type="text" value={property.district} onChange={(e) => pp('district', e.target.value)}
+                   className="w-full px-4 py-2 border-2 border-gray-100 rounded-xl text-sm font-black focus:ring-2 focus:ring-[var(--primary)] outline-none" />
                 </div>
               </div>
 
-              {/* 수도권/규제지역 토글 */}
-              <div className="space-y-3">
-                <ToggleRow
-                  label="수도권 여부"
-                  value={property.isCapitalArea}
-                  onChange={(v) => pp('isCapitalArea', v)}
-                  tooltip="서울, 경기, 인천 지역이 이에 해당됩니다. 수도권은 스트레스 DSR이 더 높게 적용됩니다."
-                />
-                <ToggleRow
-                  label="규제지역 여부"
-                  value={property.isRegulatedArea}
-                  onChange={(v) => pp('isRegulatedArea', v)}
-                  tooltip="정부가 대출·세금 규제를 강하게 적용하는 지역입니다. LTV 한도가 낮아져 대출 가능 금액이 줄어듭니다."
-                />
+              <div className="space-y-4 pt-4">
+                <ToggleRow label="수도권 여부" value={property.isCapitalArea} onChange={(v) => pp('isCapitalArea', v)} />
+                <ToggleRow label="규제지역 여부" value={property.isRegulatedArea} onChange={(v) => pp('isRegulatedArea', v)} />
               </div>
-
-              {/* 계약일 (기존 매매/분양 조건부) */}
-              <AnimatePresence>
-                {(property.transactionType === 'existing' || property.transactionType === 'right') && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">매매계약일</label>
-                      <input type="date" value={property.contractDate}
-                        onChange={(e) => pp('contractDate', e.target.value)}
-                        className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">계약금 납부일</label>
-                      <input type="date" value={property.contractDepositDate}
-                        onChange={(e) => pp('contractDepositDate', e.target.value)}
-                        className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* 분양 공고일 (분양 조건부) */}
-              <AnimatePresence>
-                {property.transactionType === 'newBuild' && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">
-                      입주자모집공고일
-                    </label>
-                    <TooltipHelp text="분양 공고가 난 날짜입니다. 일부 정책 대출은 공고일 기준으로 자격이 달라집니다." />
-                    <input type="date" value={property.recruitAnnouncementDate}
-                      onChange={(e) => pp('recruitAnnouncementDate', e.target.value)}
-                      className="w-full mt-1 px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </SectionCard>
 
             {/* ⑤ 대출 조건 */}
             <SectionCard title="희망 대출 조건" icon={Percent} open={sections.conditions} onToggle={() => toggleSection('conditions')}>
-              {/* 만기 */}
               <div>
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">희망 만기</label>
                 <RadioGroup
-                  options={[
-                    { value: '10', label: '10년' }, { value: '15', label: '15년' },
-                    { value: '20', label: '20년' }, { value: '30', label: '30년' },
-                    { value: '40', label: '40년' }, { value: '50', label: '50년' },
-                  ]}
+                  options={[{ value: '10', label: '10년' }, { value: '20', label: '20년' }, { value: '30', label: '30년' }, { value: '40', label: '40년' }, { value: '50', label: '50년' }]}
                   value={property.loanTermYears}
                   onChange={(v) => pp('loanTermYears', v)}
                 />
               </div>
 
-              {/* 상환 방식 */}
               <div>
                 <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">상환 방식</label>
                 <RadioGroup
-                  options={[
-                    { value: 'equalPrincipalInterest', label: '원리금균등' },
-                    { value: 'equalPrincipal', label: '원금균등' },
-                    { value: 'graduated', label: '체증식' },
-                  ]}
+                  options={[{ value: 'equalPrincipalInterest', label: '원리금균등' }, { value: 'equalPrincipal', label: '원금균등' }, { value: 'graduated', label: '체증식' }]}
                   value={property.repaymentMethod}
-                  onChange={(v) => { pp('repaymentMethod', v as RepaymentMethod); up('wantsGraduatedRepayment', v === 'graduated'); }}
+                  onChange={(v) => pp('repaymentMethod', v as RepaymentMethod)}
                 />
-                <AnimatePresence>
-                  {property.repaymentMethod === 'graduated' && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                      className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
-                      <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-xs font-bold text-amber-700">
-                        초기 월 부담은 낮아지지만, 시간이 갈수록 상환액이 커집니다. 디딤돌·신생아 특례에서는 체증식 이용 제한이 있을 수 있습니다.
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
-              {/* 금리 유형 */}
               <div>
-                <div className="flex items-center gap-1.5 mb-2">
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest">금리 유형</label>
-                  <TooltipHelp text="고정형은 이자율이 변하지 않고, 변동형은 시장 금리에 따라 바뀝니다. 혼합형은 초기 5년 고정 후 변동으로 전환됩니다." />
-                </div>
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">금리 유형</label>
                 <RadioGroup
-                  options={[
-                    { value: 'fixed', label: '고정형' },
-                    { value: 'mixed', label: '혼합형' },
-                    { value: 'periodic', label: '주기형' },
-                    { value: 'variable', label: '변동형' },
-                  ]}
+                  options={[{ value: 'fixed', label: '고정형' }, { value: 'mixed', label: '혼합형' }, { value: 'periodic', label: '주기형' }, { value: 'variable', label: '변동형' }]}
                   value={property.rateType}
                   onChange={(v) => pp('rateType', v as RateType)}
                 />
@@ -771,55 +695,47 @@ export default function LoanDashboardV3() {
             </SectionCard>
           </div>
 
-          {/* ── RIGHT: Live Results (Sticky) ── */}
+          {/* ── RIGHT: Results (Sticky on XL) ── */}
           <div className="xl:col-span-5 space-y-4 xl:sticky xl:top-24">
-
             {/* Monthly Payment */}
-            <motion.div key={monthlyPayment} initial={{ scale: 0.98, opacity: 0.8 }} animate={{ scale: 1, opacity: 1 }}
-              className="dashboard-card-dark min-h-[240px] flex flex-col justify-between">
+            <motion.div key={monthlyPayment} initial={{ scale: 0.98 }} animate={{ scale: 1 }}
+              className="dashboard-card-dark min-h-[220px] flex flex-col justify-between p-7">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="text-white/40 text-[11px] font-black uppercase tracking-[0.3em]">예상 월 상환액</h4>
-                  <p className="text-white text-base font-black tracking-tighter mt-1">
-                    {property.repaymentMethod === 'graduated' ? '체증식 초기 기준' : '원리금균등 기준'}
+                  <h4 className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">예상 월 상환액</h4>
+                  <p className="text-white text-sm font-black mt-1">
+                    {property.repaymentMethod === 'graduated' ? '체증식 초기' : '표준 원리금균등'}
                   </p>
-                </div>
-                <div className="px-3 py-1 bg-white/10 rounded-full text-[9px] font-black uppercase tracking-widest text-white/60">
-                  {property.loanTermYears}년 만기
                 </div>
               </div>
               <div className="py-4">
-                <span className="text-5xl md:text-6xl font-black tracking-tighter">{monthlyPayment.toLocaleString()}</span>
-                <span className="text-xl font-black ml-2 opacity-40">원</span>
+                <span className="text-[clamp(2.5rem,8vw,4.5rem)] font-black tracking-tighter leading-none">{monthlyPayment.toLocaleString()}</span>
+                <span className="text-lg font-black ml-2 opacity-40">원</span>
               </div>
               <div className="pt-4 border-t border-white/10 text-white/40 text-[10px] font-bold">
-                대출 원금 {loanAmount.toLocaleString()}만원 · {loanYears}년 · 연 {(annualRate * 100).toFixed(2)}% (가정)
+                대출 원금 {loanAmount.toLocaleString()}만원 · {loanYears}년 · 연 {(annualRate * 100).toFixed(2)}%
               </div>
             </motion.div>
 
-            {/* DSR / LTV */}
+            {/* DSR / LTV Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-2">
                   <PieChart className="w-4 h-4 text-gray-300" />
                   <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">예상 DSR</span>
-                  <TooltipHelp text="연 소득 대비 1년 동안 갚아야 하는 전체 대출 원리금 비율입니다. 40% 초과 시 대출이 제한될 수 있습니다." />
                 </div>
-                <span className={`text-3xl font-black tracking-tighter ${dsr < 40 ? 'text-emerald-500' : dsr < 60 ? 'text-amber-500' : 'text-rose-500'}`}>
+                <span className={`text-4xl font-black tracking-tighter ${dsr < 40 ? 'text-emerald-500' : 'text-rose-500'}`}>
                   {dsr.toFixed(1)}%
                 </span>
-                <p className={`text-[10px] font-bold mt-1 ${dsr < 40 ? 'text-emerald-500' : dsr < 60 ? 'text-amber-500' : 'text-rose-500'}`}>
-                  {dsr < 40 ? '안정적' : dsr < 60 ? '주의' : '위험'}
-                </p>
+                <p className="text-[10px] font-bold text-gray-400 mt-1">{dsr < 40 ? '안정적' : '위험'}</p>
               </div>
               <div className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 mb-2">
                   <Percent className="w-4 h-4 text-gray-300" />
                   <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">LTV</span>
-                  <TooltipHelp text="집값 대비 대출 비율입니다. LTV 70%면 5억 집에 최대 3.5억까지 대출 가능." />
                 </div>
-                <span className="text-3xl font-black tracking-tighter text-[var(--secondary)]">{ltv}%</span>
-                <p className="text-[10px] font-bold text-gray-400 mt-1">{property.isRegulatedArea ? '규제지역' : '일반'} 기준</p>
+                <span className="text-4xl font-black tracking-tighter text-[var(--secondary)]">{ltv}%</span>
+                <p className="text-[10px] font-bold text-gray-400 mt-1">주택가격 대비</p>
               </div>
             </div>
 
@@ -833,32 +749,17 @@ export default function LoanDashboardV3() {
               ].map(item => (
                 <div key={item.name} className={`rounded-2xl border-2 px-5 py-4 transition-all ${
                   item.data.status === 'possible' ? 'bg-emerald-50 border-emerald-200' :
-                  item.data.status === 'conditional' ? 'bg-amber-50 border-amber-200' :
-                  'bg-gray-50 border-gray-100'
+                  item.data.status === 'conditional' ? 'bg-amber-50 border-amber-200' : 'bg-gray-50 border-gray-100'
                 }`}>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${
-                        item.data.status === 'possible' ? 'bg-emerald-500' :
-                        item.data.status === 'conditional' ? 'bg-amber-500' : 'bg-gray-300'
-                      }`} />
-                      <span className="font-black text-sm text-[var(--secondary)]">{item.name}</span>
-                      <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
-                        item.data.status === 'possible' ? 'bg-emerald-100 text-emerald-700' :
-                        item.data.status === 'conditional' ? 'bg-amber-100 text-amber-700' :
-                        'bg-gray-200 text-gray-500'
-                      }`}>
-                        {item.data.status === 'possible' ? '가능' : item.data.status === 'conditional' ? '조건부' : '어려움'}
-                      </span>
-                    </div>
+                    <span className="font-black text-sm text-[var(--secondary)]">{item.name}</span>
                     <span className="font-black text-base text-[var(--secondary)]">
                       {item.data.status === 'difficult' ? '—' : `${item.data.amount.toLocaleString()}만원`}
                     </span>
                   </div>
-                  {/* Fail reasons */}
                   {item.data.failReasons && item.data.failReasons.length > 0 && (
-                    <div className="mt-2 ml-5 space-y-1">
-                      {item.data.failReasons.slice(0, 2).map((r, i) => (
+                    <div className="mt-2 space-y-1">
+                      {item.data.failReasons.slice(0, 1).map((r, i) => (
                         <p key={i} className="text-[10px] font-bold text-gray-500">· {r}</p>
                       ))}
                     </div>
@@ -867,21 +768,18 @@ export default function LoanDashboardV3() {
               ))}
             </div>
 
-            {/* Total Buying Power */}
+            {/* Total Power */}
             <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] rounded-3xl p-7 text-white text-center">
               <p className="text-white/60 text-[10px] font-black uppercase tracking-widest mb-1">총 구매 가능 금액</p>
-              <span className="text-4xl font-black tracking-tighter">{formatManwonToKoreanPreview(result.totalBuyingPower)}</span>
-              <p className="text-white/60 text-xs font-bold mt-2">
+              <span className="text-[clamp(1.5rem,6vw,3rem)] font-black tracking-tighter leading-none">{formatManwonToKoreanPreview(result.totalBuyingPower)}</span>
+              <p className="text-white/60 text-[10px] font-bold mt-2">
                 대출 {formatManwonToKoreanPreview(loanAmount)} + 현금 {formatManwonToKoreanPreview(result.userCash)}
               </p>
             </div>
 
-            {/* Save */}
             <SaveButton profile={calcProfile as any} property={property} result={result} />
-
-            {/* Disclaimer */}
             <p className="text-center text-[10px] text-gray-300 font-bold px-4 leading-relaxed">
-              이 결과는 입력값 기반의 예상치입니다. 실제 가능 여부는 금융기관 심사, 최신 규제, 증빙서류에 따라 달라집니다.
+              본 결과는 참고용이며 실제 심사 결과와 다를 수 있습니다.
             </p>
           </div>
         </div>
