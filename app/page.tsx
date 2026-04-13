@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
 
           <p className="text-white/60 text-base sm:text-lg md:text-2xl max-w-3xl mx-auto font-black tracking-tight leading-snug px-4">
-            단순한 계산기가 아닙니다. 당신의 인생 데이터를 <br className="hidden sm:block" />
+            단순한 계산기를 넘어섰습니다. 당신의 인생 데이터를<br className="hidden sm:block" />
             예술적인 숫자로 변형하는 정밀 알고리즘입니다.
           </p>
 
@@ -50,7 +50,7 @@ export default function Home() {
               href="/calculator"
               className="inline-flex items-center justify-center bg-white text-[var(--secondary)] text-sm sm:text-lg md:text-2xl font-black px-8 sm:px-12 md:px-20 py-4 sm:py-5 md:py-8 rounded-full shadow-[0_40px_100px_rgba(255,255,255,0.1)] hover:scale-105 active:scale-95 transition-all group w-full sm:w-auto"
             >
-              지금 엔진 가동하기 <ArrowRight className="inline-block ml-3 group-hover:translate-x-3 transition-transform" />
+              지금 엔진 가동하기 <span className="ml-2 group-hover:translate-x-2 transition-transform">→</span>
             </Link>
           </div>
         </div>
