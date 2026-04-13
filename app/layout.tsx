@@ -1,8 +1,9 @@
 import './globals.css';
+import InAppBrowserDetector from '@/components/auth/InAppBrowserDetector';
 
 export const metadata = {
-  title: '내 집 가능 예산 계산기',
-  description: '재무 상황과 희망 주택 조건으로 현실적인 예산 계산',
+  title: 'JipScout - 대한민국 주택담보대출 판정 엔진',
+  description: '재무 상황과 희망 주택 조건으로 현실적인 대출 한도와 상품 판정',
 };
 
 export default function RootLayout({
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <InAppBrowserDetector />
+        {children}
+      </body>
     </html>
   );
 }
