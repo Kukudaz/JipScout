@@ -30,9 +30,9 @@ export default function Home() {
         </motion.div>
 
         <div className="relative z-10 text-center px-6 space-y-10">
-          <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full">
-            <Sparkles className="w-4 h-4 text-[var(--primary)]" />
-            <span className="text-[var(--primary)] text-[10px] font-black uppercase tracking-[0.4em]">Next Generation Analysis Engine</span>
+          <div className="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full max-w-[95vw] overflow-hidden">
+            <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[var(--primary)] shrink-0" />
+            <span className="text-[var(--primary)] text-[7px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] truncate">Next Generation Analysis Engine</span>
           </div>
 
           <h1 className="hero-text text-white drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
@@ -40,17 +40,19 @@ export default function Home() {
             <span className="gradient-text">아름다운 한도 판정.</span>
           </h1>
 
-          <p className="text-white/60 text-lg md:text-2xl max-w-3xl mx-auto font-black tracking-tight leading-snug">
-            단순한 계산기가 아닙니다. 당신의 인생 데이터를<br />
+          <p className="text-white/60 text-base sm:text-lg md:text-2xl max-w-3xl mx-auto font-black tracking-tight leading-snug px-4">
+            단순한 계산기가 아닙니다. 당신의 인생 데이터를<br className="hidden sm:block" />
             예술적인 숫자로 변형하는 정밀 알고리즘입니다.
           </p>
 
-          <Link
-            href="/calculator"
-            className="inline-block bg-white text-[var(--secondary)] text-2xl font-black px-20 py-8 rounded-[2rem] shadow-[0_40px_100px_rgba(255,255,255,0.1)] hover:scale-105 active:scale-95 transition-all group"
-          >
-            지금 엔진 가동하기 <ArrowRight className="inline-block ml-4 group-hover:translate-x-3 transition-transform" />
-          </Link>
+          <div className="px-4 pt-4">
+            <Link
+              href="/calculator"
+              className="inline-flex items-center justify-center bg-white text-[var(--secondary)] text-sm sm:text-lg md:text-2xl font-black px-8 sm:px-12 md:px-20 py-4 sm:py-5 md:py-8 rounded-full shadow-[0_40px_100px_rgba(255,255,255,0.1)] hover:scale-105 active:scale-95 transition-all group w-full sm:w-auto"
+            >
+              지금 엔진 가동하기 <ArrowRight className="inline-block ml-3 group-hover:translate-x-3 transition-transform" />
+            </Link>
+          </div>
         </div>
       </section>
 

@@ -46,7 +46,7 @@
   }
 
   .hero-text {
-    @apply text-[clamp(2.5rem,10vw,7.5rem)] font-black leading-[1.1] md:leading-[0.9] tracking-[-0.05em];
+    @apply text-5xl sm:text-7xl md:text-[8rem] lg:text-[10rem] font-black leading-[1.1] md:leading-[0.9] tracking-[-0.05em];
   }
 
   .input-label {
