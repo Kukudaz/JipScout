@@ -62,8 +62,8 @@ export function SmartAreaField({ label, value, min, max, step, unit, tooltip, on
         </div>
       </div>
 
-      <div className="flex items-center gap-4 bg-gray-50/50 p-2 rounded-2xl border border-gray-100">
-        <div className="flex-1 px-2 relative h-10 flex items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-gray-50/50 p-2 sm:p-3 rounded-2xl border border-gray-100">
+        <div className="flex-1 px-2 relative h-10 flex items-center min-w-[150px]">
           <div className="absolute inset-x-2 h-2 bg-gray-200 rounded-full overflow-hidden pointer-events-none">
             <div 
               className="h-full bg-[var(--primary)] rounded-full transition-all duration-75"

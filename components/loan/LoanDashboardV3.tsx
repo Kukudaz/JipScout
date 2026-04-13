@@ -281,7 +281,7 @@ export default function LoanDashboardV3() {
       </nav>
 
       {/* Body */}
-      <div className="pt-20 max-w-[1400px] mx-auto px-4 md:px-6 py-8">
+      <div className="pt-20 max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 py-8">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 
           {/* ── LEFT: Input Panels ── */}
@@ -639,7 +639,7 @@ export default function LoanDashboardV3() {
               />
 
               {/* 지역 */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">시/도</label>
                   <input
@@ -798,7 +798,7 @@ export default function LoanDashboardV3() {
             </motion.div>
 
             {/* DSR / LTV */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-3">
                   <PieChart className="w-4 h-4 text-gray-300" />
