@@ -1,9 +1,13 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import AuthButton from '@/components/AuthButton';
+
+// Load Vanta (Three.js WebGL) on client only — no SSR
+const VantaHero = dynamic(() => import('@/components/VantaHero'), { ssr: false });
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -37,17 +41,15 @@ export default function Home() {
       </nav>
 
       {/* Cinematic Hero */}
-      <section className="relative h-screen w-full bg-black overflow-hidden flex flex-col items-center justify-center">
+      <section className="relative h-screen w-full bg-[#000d1a] overflow-hidden flex flex-col items-center justify-center">
+        {/* Real WebGL 3D Scene via Vanta.js */}
         <motion.div
-          style={{ scale: heroScale, opacity: heroOpacity, filter: `blur(${heroBlur}px)` }}
+          style={{ opacity: heroOpacity }}
           className="absolute inset-0 w-full h-full"
         >
-          <img
-            src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop"
-            alt="Architecture"
-            className="w-full h-full object-cover opacity-60 grayscale-[0.2]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/60" />
+          <VantaHero effect="HALO" />
+          {/* Gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000d1a]/30 via-transparent to-[#000d1a]/80 pointer-events-none" />
         </motion.div>
 
         <div className="relative z-10 text-center px-6 space-y-10">
