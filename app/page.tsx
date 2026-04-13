@@ -17,29 +17,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-3xl border-b border-gray-100/50">
-        <div className="max-w-7xl mx-auto px-10 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <span className="text-3xl font-black text-[var(--secondary)] tracking-[-0.08em]">
-              Jip<span className="gradient-text">Scout</span>
-            </span>
-            <div className="px-3 py-1 bg-[var(--accent)] rounded-lg text-[9px] font-black text-[var(--primary)] uppercase tracking-widest">v3.0</div>
-          </div>
-          <div className="hidden md:flex gap-16 text-[10px] font-black uppercase tracking-[0.3em] text-[var(--secondary)]/40">
-            <a href="#" className="hover:text-[var(--secondary)] transition-colors">Precision Engine</a>
-            <a href="#" className="hover:text-[var(--secondary)] transition-colors">Architecture</a>
-            <a href="#" className="hover:text-[var(--secondary)] transition-colors">Global Intelligence</a>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/calculator" className="hidden sm:block bg-black text-white text-[10px] font-black px-8 py-3.5 rounded-full hover:bg-gray-800 transition-all">
-              Start Analyzing
-            </Link>
-            <AuthButton />
-          </div>
-        </div>
-      </nav>
-
       {/* Cinematic Hero */}
       <section className="relative h-screen w-full bg-[#000d1a] overflow-hidden flex flex-col items-center justify-center">
         {/* Real WebGL 3D Scene via Vanta.js */}

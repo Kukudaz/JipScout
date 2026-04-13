@@ -1,5 +1,6 @@
 import './globals.css';
 import InAppBrowserDetector from '@/components/auth/InAppBrowserDetector';
+import Header from '@/components/layout/Header';
 
 export const metadata = {
   title: 'JipScout - 대한민국 주택담보대출 판정 엔진',
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <InAppBrowserDetector />
+        <Header />
         {children}
       </body>
     </html>

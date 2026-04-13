@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateLoanSummary } from '@/lib/calculator';
 import { MARKET_RATE_CONFIG, BANK_MORTGAGE_RULES } from '@/lib/policies/loanRules';
@@ -10,6 +10,7 @@ import { SmartAreaField } from '@/components/ui/SmartAreaField';
 import { TooltipHelp } from '@/components/ui/TooltipHelp';
 import SaveButton from '@/components/SaveButton';
 import AuthButton from '@/components/AuthButton';
+import { useCalculationStore } from '@/hooks/useCalculationStore';
 import {
   UserProfileInput, PropertyInput,
   MarriageStatus, JobType, HousingStatus,
@@ -212,6 +213,7 @@ const INITIAL_PROPERTY: PropertyInput = {
 export default function LoanDashboardV3() {
   const [profile, setProfile] = useState<UserProfileInput>(INITIAL_PROFILE);
   const [property, setProperty] = useState<PropertyInput>(INITIAL_PROPERTY);
+  const { updateSummary } = useCalculationStore();
 
   // section open state
   const [sections, setSections] = useState({
@@ -251,6 +253,11 @@ export default function LoanDashboardV3() {
   const totalIncome = (Number(profile.myIncome) || 0) + (Number(profile.spouseIncome) || 0);
   const dsr = totalIncome > 0 ? ((monthlyPayment * 12) / (totalIncome * 10000)) * 100 : 0;
 
+  // Sync with Global Header
+  useEffect(() => {
+    updateSummary({ loanAmount, dsr });
+  }, [loanAmount, dsr, updateSummary]);
+
   const up = (key: keyof UserProfileInput, value: any) =>
     setProfile(prev => ({ ...prev, [key]: typeof value === 'number' ? value.toString() : value }));
   const pp = (key: keyof PropertyInput, value: any) =>
@@ -260,42 +267,6 @@ export default function LoanDashboardV3() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24 md:pb-0">
-      {/* Top Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-3xl border-b border-gray-100/70">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 md:gap-3 shrink-0">
-            <Link href="/" className="hidden sm:flex items-center gap-2 text-gray-400 hover:text-gray-700 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div className="hidden sm:block w-px h-4 bg-gray-200" />
-            <div className="flex items-center gap-2">
-              <Calculator className="w-4 h-4 text-[var(--primary)]" />
-              <span className="text-sm font-black text-[var(--secondary)] tracking-tight hidden xs:block">JipScout</span>
-            </div>
-          </div>
-
-          {/* Real-time Summary in Nav */}
-          <div className="flex-1 flex items-center justify-center gap-4 md:gap-8 overflow-hidden">
-            <div className="flex flex-col items-center">
-              <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">예상 한도</span>
-              <span className="text-xs md:text-sm font-black text-[var(--primary)] tracking-tight truncate">
-                {formatManwonToKoreanPreview(loanAmount)}
-              </span>
-            </div>
-            <div className="h-4 w-px bg-gray-100 hidden md:block" />
-            <div className="flex flex-col items-center">
-              <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">예상 DSR</span>
-              <span className={`text-xs md:text-sm font-black tracking-tight ${dsr < 40 ? 'text-emerald-500' : 'text-rose-500'}`}>
-                {dsr.toFixed(1)}%
-              </span>
-            </div>
-          </div>
-
-          <div className="shrink-0">
-            <AuthButton />
-          </div>
-        </div>
-      </nav>
 
       {/* Sticky Bottom Summary (Mobile Only) */}
       <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
